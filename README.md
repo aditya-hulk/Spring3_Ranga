@@ -1,3 +1,307 @@
+# Section-30 – Functional Pgm
+# 416. Step-1 Functional Pgm
+![alt text](image-108.png)
+### FP01Structured.java
+```java
+package programming;
+
+import java.util.List;
+
+public class FP01Structured {
+
+	public static void main(String[] args) {
+		
+		//Method to print All number in list
+		printAllNumberInListStructured(List.of(12,9,13,4,6,2,4,12,15));
+	}
+
+	private static void printAllNumberInListStructured(List<Integer> numbers) {		
+		
+		for(int number : numbers) {
+			System.out.println(number);
+		}		
+	}
+
+}
+```
+# 417. Step-2
+![alt text](image-109.png)![alt text](image-110.png)
+### FP01Functional.java
+```java
+package programming;
+
+import java.util.List;
+
+public class FP01Functional {
+
+	public static void main(String[] args) {
+
+		// Method to print All number in list
+		printAllNumberInListFunctional(List.of(12, 9, 13, 4, 6, 2, 4, 12, 15));
+	}
+
+	private static void print(int number) {
+		System.out.println(number);
+	}
+
+	private static void printAllNumberInListFunctional(List<Integer> numbers) {
+
+		numbers.stream().forEach(FP01Functional::print);
+
+	}
+
+}
+```
+# 418. Step-3 via filter
+![alt text](image-111.png)![alt text](image-112.png)![alt text](image-113.png)
+### FP01Functional.java
+```java
+package programming;
+
+import java.util.List;
+
+public class FP01Functional {
+
+	public static void main(String[] args) {
+
+		// Method to print All number in list
+		printAllNumberInListFunctional(List.of(12, 9, 13, 4, 6, 2, 4, 12, 15));
+	}
+
+	private static void printAllNumberInListFunctional(List<Integer> numbers) {
+
+		numbers.stream().forEach(System.out::println);
+
+	}
+
+}
+```
+### FP01Structured.java
+```java
+package programming;
+
+import java.util.List;
+
+public class FP01Structured {
+
+	public static void main(String[] args) {
+
+		List<Integer> numbers = List.of(12, 9, 13, 4, 6, 2, 4, 12, 15);
+//		printAllNumberInListStructured(numbers);
+		printEvenNumberInListStructured(numbers);
+	}
+
+	private static void printAllNumberInListStructured(List<Integer> numbers) {
+
+		for (int number : numbers) {
+			System.out.println(number);
+		}
+	}
+
+	private static void printEvenNumberInListStructured(List<Integer> numbers) {
+
+		for (int number : numbers) {
+			if (number % 2 == 0)
+				System.out.println(number);
+		}
+	}
+
+}
+```
+### FP01Functional.java
+```java
+package programming;
+
+import java.util.List;
+
+public class FP01Functional {
+
+	public static void main(String[] args) {
+
+		List<Integer> numbers = List.of(12, 9, 13, 4, 6, 2, 4, 12, 15);
+//		printAllNumberInListFunctional(numbers);
+		printEvenNumberInListFunctional(numbers);
+	}
+
+	private static boolean isEven(int number) {
+		return number % 2 == 0;
+	}
+
+	private static void printAllNumberInListFunctional(List<Integer> numbers) {
+
+		numbers.stream().forEach(System.out::println);
+	}
+
+	private static void printEvenNumberInListFunctional(List<Integer> numbers) {
+
+		numbers.stream().filter(FP01Functional::isEven).forEach(System.out::println);
+	}
+}
+```
+# 419. Step-4 Using lambda
+![alt text](image-114.png)![alt text](image-115.png)
+### FP01Functional.java
+```java
+package programming;
+
+import java.util.List;
+
+public class FP01Functional {
+
+	public static void main(String[] args) {
+
+		List<Integer> numbers = List.of(12, 9, 13, 4, 6, 2, 4, 12, 15);
+		printEvenNumberInListFunctional(numbers);
+	}
+
+	private static void printEvenNumberInListFunctional(List<Integer> numbers) {
+
+		numbers.stream().filter(number -> number % 2 == 0).forEach(System.out::println);
+	}
+}
+```
+# 420. Step-5
+![alt text](image-116.png)![alt text](image-117.png)![alt text](image-118.png)![alt text](image-119.png)![alt text](image-120.png)![alt text](image-121.png)
+### FP01Exercises.java
+```java
+package programming;
+
+import java.util.List;
+
+public class FP01Exercises {
+
+	public static void main(String[] args) {
+
+		List<Integer> numbers = List.of(12, 9, 13, 4, 6, 2, 4, 12, 15);
+
+		// Print odd number list
+		printOddNumberInListFunctional(numbers);
+	}
+
+	private static void printOddNumberInListFunctional(List<Integer> numbers) {
+
+		numbers.stream().filter(number -> number % 2 != 0).forEach(System.out::println);
+	}
+}
+```
+### FP01Exercises.java
+```java
+package programming;
+
+import java.util.List;
+
+public class FP01Exercises {
+
+	public static void main(String[] args) {
+
+		// Exercise-1
+		List<Integer> numbers = List.of(12, 9, 13, 4, 6, 2, 4, 12, 15);
+//		printOddNumberInListFunctional(numbers);
+
+		List<String> courses = List.of("Spring", "Spring Boot", "API", "Microservices", "AWS", "PCF", "Azure", "Docker",
+				"Kubernate");
+
+		//// Exercise-3
+		courses.stream().filter(course -> course.contains("Spring")).forEach(System.out::println);
+	}
+
+}
+```
+###  FP01Exercises.java
+```java
+package programming;
+
+import java.util.List;
+
+public class FP01Exercises {
+
+	public static void main(String[] args) {	
+
+		List<String> courses = List.of("Spring", "Spring Boot", "API", "Microservices",
+				"AWS", "PCF", "Azure", "Docker",
+				"Kubernate");
+
+		courses.stream()
+		 .filter(course -> course.length() >= 4)
+		 .forEach(System.out::println);
+	}
+
+}
+```
+# 421. Step-6 Using map
+![alt text](image-122.png)![alt text](image-123.png)![alt text](image-124.png)
+### FP01Exercises.java
+```java
+package programming;
+
+import java.util.List;
+
+public class FP01Exercises {
+
+	public static void main(String[] args) {	
+
+		List<Integer> numbers = List.of(12, 9, 13, 4, 6, 2, 4, 12, 15);
+		
+		List<String> courses = List.of("Spring", "Spring Boot", "API", "Microservices",
+				"AWS", "PCF", "Azure", "Docker",
+				"Kubernate");
+
+		printCubesOfOddNumber(numbers);
+	}
+
+	private static void printCubesOfOddNumber(List<Integer> numbers) {
+		
+		numbers.stream()
+		 .filter(number -> number%2 != 0)
+		 .map(number -> number * number * number)
+		 .forEach(System.out::println);
+		
+	}	
+
+}
+```
+### FP01Exercises.java
+```java
+package programming;
+
+import java.util.List;
+
+public class FP01Exercises {
+
+	public static void main(String[] args) {	
+
+		List<Integer> numbers = List.of(12, 9, 13, 4, 6, 2, 4, 12, 15);
+		
+		List<String> courses = List.of("Spring", "Spring Boot", "API", "Microservices",
+				"AWS", "PCF", "Azure", "Docker",
+				"Kubernate");
+
+//		printCubesOfOddNumber(numbers);
+		
+		printLengthOfCourses(courses);
+	}
+
+	private static void printLengthOfCourses(List<String> courses) {
+		
+		courses.stream()
+		 .map(course ->  (course + " : " +course.length()))
+		 .forEach(System.out::println);
+		
+	}
+
+	private static void printCubesOfOddNumber(List<Integer> numbers) {
+		
+		numbers.stream()
+		 .filter(number -> number%2 != 0)
+		 .map(number -> number * number * number)
+		 .forEach(System.out::println);
+		
+	}	
+
+}
+```
+# 422. Step-7 Optional
+![alt text](image-125.png)![alt text](image-126.png)![alt text](image-127.png)![alt text](image-128.png)
 # Section-1
 # 1. Getting Started
 ![alt text](image.png)![alt text](image-1.png)![alt text](image-2.png)![alt text](image-3.png)
@@ -891,3 +1195,80 @@ public class App02HelloWorldSpring {
 
 }
 ```
+# 30. Step-14-02 primary and qualifier annotation
+![alt text](image-129.png)![alt text](image-130.png)![alt text](image-131.png)![alt text](image-132.png)![alt text](image-133.png)![alt text](image-134.png)![alt text](image-135.png)![alt text](image-136.png)![alt text](image-137.png)![alt text](image-138.png)![alt text](image-139.png)![alt text](image-140.png)![alt text](image-141.png)
+# Quiz-5
+![alt text](image-142.png)![alt text](image-143.png)![alt text](image-144.png)
+# Section-7
+# 31. Step-15 -01
+![alt text](image-145.png)![alt text](image-146.png)![alt text](image-147.png)
+# 32. Step-15-02
+![alt text](image-148.png)![alt text](image-149.png)![alt text](image-150.png)
+###  GamingConfiguration.java
+```java
+package com.in28minutes.learn_spring_framework;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+
+import com.in28minutes.learn_spring_framework.game.GameRunner;
+import com.in28minutes.learn_spring_framework.game.GamingConsole;
+import com.in28minutes.learn_spring_framework.game.PacmanGame;
+
+@Configuration
+public class GamingConfiguration {
+
+	@Bean
+	public GamingConsole game() {
+		var game = new PacmanGame();
+		return game;
+	}
+
+	@Bean
+	@Primary
+	public GameRunner gameRunner(GamingConsole game) {
+		var gameRunner = new GameRunner(game);
+		return gameRunner;
+	}
+
+	@Bean
+	public GameRunner gameRunner1() {
+		var gameRunner = new GameRunner(game());
+		return gameRunner;
+	}
+}
+```
+### App03GamingSpringBeans.java
+```java
+package com.in28minutes.learn_spring_framework;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.in28minutes.learn_spring_framework.game.GameRunner;
+import com.in28minutes.learn_spring_framework.game.GamingConsole;
+public class App03GamingSpringBeans {
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(GamingConfiguration.class)) {
+
+			context.getBean(GamingConsole.class).up();
+
+			System.out.println("-------------------");
+
+			context.getBean(GameRunner.class).run();
+		}
+	}
+}
+```
+# 33. Step-15 03. Code Review
+![alt text](image-151.png)
+# 34. Step-16. More questions
+![alt text](image-152.png)
+# 35. Step-17 Exploring 
+![alt text](image-153.png)![alt text](image-154.png)
+# Quiz-6
+![alt text](image-155.png)![alt text](image-156.png)
+# 36. Remembering Things for long time
+![alt text](image-157.png)
