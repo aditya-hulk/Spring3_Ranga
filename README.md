@@ -1272,3 +1272,484 @@ public class App03GamingSpringBeans {
 ![alt text](image-155.png)![alt text](image-156.png)
 # 36. Remembering Things for long time
 ![alt text](image-157.png)
+# Section-8 (37 to 53)
+# 37.  Step-1 -01 Spring Create your Object
+![alt text](image-158.png)![alt text](image-159.png)![alt text](image-160.png)![alt text](image-161.png)![alt text](image-162.png)
+### PacmanGame.java
+```java
+package com.in28minutes.learn_spring_framework.game;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class PacmanGame implements GamingConsole {
+
+	@Override
+	public void up() {
+		System.out.println("up");
+	}
+
+	@Override
+	public void down() {
+		System.out.println("down");
+	}
+
+	@Override
+	public void left() {
+		System.out.println("left");
+	}
+
+	@Override
+	public void right() {
+		System.out.println("right");
+	}
+
+}
+```
+### App03GamingSpringBeans.java
+```java
+package com.in28minutes.learn_spring_framework;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+import com.in28minutes.learn_spring_framework.game.GameRunner;
+import com.in28minutes.learn_spring_framework.game.GamingConsole;
+
+@Configuration
+@ComponentScan("com.in28minutes.learn_spring_framework.game")
+public class App03GamingSpringBeans {
+
+	@Bean
+	public GameRunner gameRunner(GamingConsole game) {
+		System.out.println("Parameter : "+ game);
+		var gameRunner = new GameRunner(game);
+		return gameRunner;
+	}
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(App03GamingSpringBeans.class)) {
+
+			context.getBean(GamingConsole.class).up();
+
+			System.out.println("-------------------");
+
+			context.getBean(GameRunner.class).run();
+		}
+
+	}
+
+}
+```
+# 38. Step-01 -02 
+![alt text](image-163.png)![alt text](image-164.png)![alt text](image-165.png)![alt text](image-166.png)![alt text](image-167.png)![alt text](image-168.png)![alt text](image-169.png)![alt text](image-170.png)
+# 39. Step-1 -03
+![alt text](image-171.png)![alt text](image-172.png)![alt text](image-173.png)
+### GameRunner.java
+```java
+package com.in28minutes.learn_spring_framework.game;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class GameRunner {
+
+	private GamingConsole game;
+
+	public GameRunner(GamingConsole game) {
+		this.game = game;
+	}
+
+	public void run() {
+		System.out.println("Running game: " + game);
+		game.up();
+		game.down();
+		game.left();
+		game.right();
+	}
+
+}
+```
+###  GamingAppLauncherApplication.java
+```java
+package com.in28minutes.learn_spring_framework;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+import com.in28minutes.learn_spring_framework.game.GameRunner;
+import com.in28minutes.learn_spring_framework.game.GamingConsole;
+
+@Configuration
+@ComponentScan("com.in28minutes.learn_spring_framework.game")
+public class GamingAppLauncherApplication {
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(GamingAppLauncherApplication.class)) {
+
+			context.getBean(GamingConsole.class).up();
+
+			System.out.println("-------------------");
+
+			context.getBean(GameRunner.class).run();
+		}
+
+	}
+
+}
+```
+# 40. Step1-04 Code Review
+![alt text](image-174.png)
+# 42. Step2 Exploring Primary and Qualifier annotation
+![alt text](image-175.png)![alt text](image-176.png)![alt text](image-177.png)![alt text](image-178.png)![alt text](image-179.png)![alt text](image-180.png)![alt text](image-181.png)
+# 43. Step-3 Primary and Qualifier which annotation you use.
+![alt text](image-182.png)![alt text](image-183.png)![alt text](image-184.png)
+# 44. Step4-01 Diff types of Dependencies
+![alt text](image-185.png)![alt text](image-186.png)![alt text](image-187.png)
+### SimpleSpringContextLauncher.java
+```java
+package com.in28minutes.learn_spring_framework.example.a0;
+
+import java.util.Arrays;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+import com.in28minutes.learn_spring_framework.game.GameRunner;
+import com.in28minutes.learn_spring_framework.game.GamingConsole;
+
+@Configuration
+@ComponentScan
+public class SimpleSpringContextLauncher {
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(SimpleSpringContextLauncher.class)) {
+
+			Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
+		}
+
+	}
+
+}
+```
+# 45. Field Injection
+![alt text](image-188.png)![alt text](image-189.png)![alt text](image-190.png)![alt text](image-191.png)![alt text](image-192.png)![alt text](image-193.png)
+## Field Injection
+### DependencyInjectionLauncherInjection.java
+```java
+package com.in28minutes.learn_spring_framework.example.a1;
+
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
+@Component
+class YourBusinessClass {
+
+	@Autowired
+	Dependency1 dependency1;
+
+	@Autowired
+	Dependency2 dependency2;
+
+	public String toString() {
+
+		return "Using " + dependency1 + " and " + dependency2;
+	}
+}
+
+@Component
+class Dependency1 {
+
+}
+
+@Component
+class Dependency2 {
+
+}
+
+@Configuration
+@ComponentScan
+public class DependencyInjectionLauncherInjection {
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(DependencyInjectionLauncherInjection.class)) {
+
+			Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
+
+			System.out.println(context.getBean(YourBusinessClass.class));
+		}
+
+	}
+
+}
+```
+# 46. Step4. -03 Setter and Constructor Injection
+![alt text](image-194.png)![alt text](image-195.png)![alt text](image-196.png)![alt text](image-197.png)![alt text](image-198.png)![alt text](image-199.png)![alt text](image-200.png)![alt text](image-201.png)
+## Setter Injection
+### DependencyInjectionLauncherInjection.java
+```java
+package com.in28minutes.learn_spring_framework.example.a1;
+
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
+@Component
+class YourBusinessClass {
+
+	Dependency1 dependency1;
+
+	Dependency2 dependency2;
+
+	@Autowired
+	public void setDependency1(Dependency1 dependency1) {
+		System.out.println("Setter-Injection- setDependency1");
+		this.dependency1 = dependency1;
+	}
+
+	@Autowired
+	public void setDependency2(Dependency2 dependency2) {
+		System.out.println("Setter-Injection- setDependency2");
+		this.dependency2 = dependency2;
+	}
+
+	public String toString() {
+
+		return "Using " + dependency1 + " and " + dependency2;
+	}
+}
+
+@Component
+class Dependency1 {
+
+}
+
+@Component
+class Dependency2 {
+
+}
+
+@Configuration
+@ComponentScan
+public class DependencyInjectionLauncherInjection {
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(DependencyInjectionLauncherInjection.class)) {
+
+			Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
+
+			System.out.println(context.getBean(YourBusinessClass.class));
+		}
+
+	}
+
+}
+```
+## Constructor Injection
+### DependencyInjectionLauncherInjection.java
+```java
+package com.in28minutes.learn_spring_framework.example.a1;
+
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
+@Component
+class YourBusinessClass {
+
+	Dependency1 dependency1;
+
+	Dependency2 dependency2;
+
+	@Autowired
+	public YourBusinessClass(Dependency1 dependency1, Dependency2 dependency2) {
+		super();
+		System.out.println("Constructor Injection");
+		this.dependency1 = dependency1;
+		this.dependency2 = dependency2;
+	}
+
+	public String toString() {
+
+		return "Using " + dependency1 + " and " + dependency2;
+	}
+}
+
+@Component
+class Dependency1 {
+
+}
+
+@Component
+class Dependency2 {
+
+}
+
+@Configuration
+@ComponentScan
+public class DependencyInjectionLauncherInjection {
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(DependencyInjectionLauncherInjection.class)) {
+
+			Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
+
+			System.out.println(context.getBean(YourBusinessClass.class));
+		}
+
+	}
+
+}
+```
+# 47. Step5 Imp Terminology
+![alt text](image-202.png)![alt text](image-203.png)![alt text](image-204.png)![alt text](image-205.png)
+# 49. Step6. Comparing @Component vs @Bean
+![alt text](image-206.png)![alt text](image-207.png)
+# 50. Step7 Why do we have dependency in Java Spring App.
+![alt text](image-208.png)
+# 51. step8 Exercise solution
+![alt text](image-209.png)![alt text](image-210.png)![alt text](image-211.png)![alt text](image-212.png)
+### DataService.java
+```java
+package com.in28minutes.learn_spring_framework.example.c1;
+
+public interface DataService {
+
+	int[] retrieveData();
+}
+```
+### MongoDbDataService.java
+```java
+package com.in28minutes.learn_spring_framework.example.c1;
+
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
+
+@Component
+@Primary
+public class MongoDbDataService implements DataService{
+
+	@Override
+	public int[] retrieveData() {
+		return new int[] {11,22,33,44,55};
+	}
+
+}
+```
+### MySqlDataService
+```java
+package com.in28minutes.learn_spring_framework.example.c1;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class MySqlDataService implements DataService{
+
+	@Override
+	public int[] retrieveData() {
+		return new int[] {1,2,3,4,5};
+	}
+
+}
+```
+### BusinessCalculationService
+```java
+package com.in28minutes.learn_spring_framework.example.c1;
+
+import java.util.Arrays;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class BusinessCalculationService {
+
+	private DataService dataService;
+
+	public BusinessCalculationService(DataService dataService) {
+		super();
+		this.dataService = dataService;
+	}
+
+	public int findMax() {
+
+		return Arrays.stream(dataService.retrieveData()).max().orElse(0);
+	}
+
+}
+```
+### RealWorldSpringContextLauncher
+```java
+package com.in28minutes.learn_spring_framework.example.c1;
+
+import java.util.Arrays;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+import com.in28minutes.learn_spring_framework.game.GameRunner;
+import com.in28minutes.learn_spring_framework.game.GamingConsole;
+
+@Configuration
+@ComponentScan
+public class RealWorldSpringContextLauncher {
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(RealWorldSpringContextLauncher.class)) {
+
+			Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
+			
+			System.out.println(context.getBean(BusinessCalculationService.class).findMax());
+		}
+
+	}
+
+}
+```
+# 52. Step9
+![alt text](image-213.png)![alt text](image-214.png)
+# Quiz-7
+![alt text](image-215.png)![alt text](image-216.png)
+# 53.  Consistent
+![alt text](image-217.png)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
