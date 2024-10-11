@@ -1736,9 +1736,465 @@ public class RealWorldSpringContextLauncher {
 ![alt text](image-215.png)![alt text](image-216.png)
 # 53.  Consistent
 ![alt text](image-217.png)
- 
- 
- 
+ # Section -9 Advance Feature
+# 55. 01 Lazy and Eager Initialization
+![alt text](image-218.png)![alt text](image-219.png)![alt text](image-220.png)![alt text](image-221.png)![alt text](image-222.png)![alt text](image-223.png)
+## Concept of Eager Initialization
+### LazyInitializationContextLauncher.java
+```java
+package com.in28minutes.learn_spring_framework.example.d1;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
+@Component
+class ClassA {
+
+}
+
+@Component
+class ClassB {
+
+	private ClassA classA;
+
+	public ClassB(ClassA classA) {
+		System.out.println("Some Initialization logic");
+		this.classA = classA;
+	}
+}
+
+@Configuration
+@ComponentScan
+public class LazyInitializationContextLauncher {
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(LazyInitializationContextLauncher.class)) {
+
+		}
+	}
+}
+```
+##  Concept of Lazy Initialization
+### LazyInitializationContextLauncher.java
+```java
+package com.in28minutes.learn_spring_framework.example.d1;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+
+@Component
+class ClassA {
+
+}
+
+@Component
+@Lazy
+class ClassB {
+
+	private ClassA classA;
+
+	public ClassB(ClassA classA) {
+		System.out.println("Some Initialization logic");
+		this.classA = classA;
+	}
+
+	public void doSomething() {
+		System.out.println("Do Something.");
+	}
+}
+
+@Configuration
+@ComponentScan
+public class LazyInitializationContextLauncher {
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(LazyInitializationContextLauncher.class)) {
+
+			System.out.println("Initialization of context is completed.");
+
+			context.getBean(ClassB.class).doSomething();
+		}
+	}
+}
+```
+# 56. Compare Lazy vs Eager Initialization
+![alt text](image-224.png)
+# 57. Bean Scopes- Prototype and Singelton
+![alt text](image-225.png)![alt text](image-226.png)![alt text](image-227.png)
+### BeanScopeLauncherApplication
+```java
+package com.in28minutes.learn_spring_framework.example.e1;
+
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+@Component
+class NormalClass {
+
+}
+
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Component
+class PrototypeClass {
+
+}
+
+@Configuration
+@ComponentScan
+public class BeanScopeLauncherApplication {
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(BeanScopeLauncherApplication.class)) {
+
+			System.out.println(context.getBean(NormalClass.class));
+			System.out.println(context.getBean(NormalClass.class));
+
+			System.out.println(context.getBean(PrototypeClass.class));
+			System.out.println(context.getBean(PrototypeClass.class));
+			System.out.println(context.getBean(PrototypeClass.class));
+
+		}
+
+	}
+
+}
+```
+# 58. Step-4 Comparing Prototype vs Singleton
+![alt text](image-228.png)![alt text](image-229.png)
+# 59. Step-5 Spring Beans – Post-Construct and Pre-Destroy
+![alt text](image-230.png)![alt text](image-231.png)![alt text](image-232.png)![alt text](image-233.png)![alt text](image-234.png)![alt text](image-235.png)![alt text](image-236.png)![alt text](image-237.png)![alt text](image-238.png)
+### PrePostContextLauncherApplication
+```java
+package com.in28minutes.learn_spring_framework.example.f1;
+
+import java.util.Arrays;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+
+@Component
+class SomeClass {
+
+	private SomeDependency someDependency;
+
+	public SomeClass(SomeDependency someDependency) {
+		super();
+		this.someDependency = someDependency;
+		System.out.println("All Dependency are ready");
+	}
+
+	@PostConstruct
+	public void initialize() {
+		someDependency.getReady();
+	}
+
+	@PreDestroy
+	public void cleanUp() {
+		System.out.println("Clean UP");
+	}
+
+}
+
+@Component
+class SomeDependency {
+
+	public void getReady() {
+		System.out.println("Some logic using someDependency");
+	}
+
+}
+
+@Configuration
+@ComponentScan
+public class PrePostContextLauncherApplication {
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(PrePostContextLauncherApplication.class)) {
+
+			Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
+
+		}
+
+	}
+}
+```
+# 60. Step-6 Evolution of Jakarta , comparing j2ee and java EE
+![alt text](image-239.png)![alt text](image-240.png)
+# 61. Step-7 Exploring Jakarta CDI
+![alt text](image-241.png)![alt text](image-242.png)![alt text](image-243.png)![alt text](image-244.png)
+## Without CDI concept
+### CDIContextLauncherApplication
+```java
+package com.in28minutes.learn_spring_framework.example.g1;
+
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
+@Component
+class BusinessService {
+
+	private DataService dataService;
+
+	@Autowired
+	public void setDataService(DataService dataService) {
+		System.out.println("Setter Injection");
+		this.dataService = dataService;
+	}
+
+	public DataService getDataService() {
+		return dataService;
+	}
+}
+
+@Component
+class DataService {
+
+}
+
+@Configuration
+@ComponentScan
+public class CDIContextLauncherApplication {
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(CDIContextLauncherApplication.class)) {
+
+			Arrays.stream(context.getBeanDefinitionNames())
+			   .forEach(System.out::println);
+			
+			System.out.println("=======================");
+			
+			System.out.println(context.getBean(BusinessService.class).getDataService());
+		}
+	}
+}
+```
+## With CDI concept
+### CDIContextLauncherApplication
+```java
+package com.in28minutes.learn_spring_framework.example.g1;
+
+import java.util.Arrays;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
+@Named
+class BusinessService {
+
+	private DataService dataService;
+
+	@Inject
+	public void setDataService(DataService dataService) {
+		System.out.println("Setter Injection");
+		this.dataService = dataService;
+	}
+
+	public DataService getDataService() {
+		return dataService;
+	}
+}
+
+@Named
+class DataService {
+
+}
+
+@Configuration
+@ComponentScan
+public class CDIContextLauncherApplication {
+
+	public static void main(String[] args) {
+
+		try (var context = new AnnotationConfigApplicationContext(CDIContextLauncherApplication.class)) {
+
+			Arrays.stream(context.getBeanDefinitionNames())
+			   .forEach(System.out::println);
+			
+			System.out.println("=======================");
+			
+			System.out.println(context.getBean(BusinessService.class).getDataService());
+		}
+	}
+}
+```
+### pom.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.3.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.in28minutes</groupId>
+	<artifactId>learn-spring-framework</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>learn-spring-framework</name>
+	<description>Demo project for Spring Boot</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.inject</groupId>
+			<artifactId>jakarta.inject-api</artifactId>
+			<version>2.0.1.MR</version>
+		</dependency>
+		
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+```
+# 63. Step8 - Xml Configuration
+![alt text](image-245.png)![alt text](image-246.png)![alt text](image-247.png)![alt text](image-248.png)![alt text](image-249.png)![alt text](image-250.png)![alt text](image-251.png)![alt text](image-252.png)![alt text](image-253.png)
+### contextConfiguration.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"> 
+        
+        <!-- bean definitions here -->
+
+	<bean id="name" class="java.lang.String" >
+		<!-- Here we use Constructor injection -->
+		<constructor-arg  value="Ranga"/>
+	</bean>
+	
+	<bean id="age" class="java.lang.Integer" >
+		<constructor-arg  value="35"/>
+	</bean>
+	
+	<!-- 
+			<context:component-scan base-package="com.in28minutes.learn_spring_framework.game"/>
+	 -->
+	 
+	 <!--  Create individual Pacman Game -->
+	 <bean id="gameOfPacman" class="com.in28minutes.learn_spring_framework.game.PacmanGame" />
+	 
+	 <bean id="gameRunner" class="com.in28minutes.learn_spring_framework.game.GameRunner">
+	 	
+	 	<constructor-arg ref="gameOfPacman" />
+	 </bean>
+	
+</beans>
+```
+### XmlConfigurationContextLauncherApplication.java
+```java
+package com.in28minutes.learn_spring_framework.example.h1;
+
+import java.util.Arrays;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.in28minutes.learn_spring_framework.game.GameRunner;
+
+public class XmlConfigurationContextLauncherApplication {
+
+	public static void main(String[] args) {
+
+		try (var context = new ClassPathXmlApplicationContext("contextConfiguration.xml")) {
+			
+			System.out.println("Created Bean Name******************");
+
+			Arrays.stream(context.getBeanDefinitionNames())
+			  .forEach(System.out::println);
+			
+			System.out.println("***************************");
+			
+			System.out.println("Value for Created Bean*************");
+			
+			System.out.println(context.getBean("name"));
+			
+			System.out.println(context.getBean("age"));
+			
+			context.getBean(GameRunner.class).run();
+		}
+
+	}
+
+}
+```
+# 64. Step-09 Java Annotation Config Vs Xml Config
+![alt text](image-254.png)![alt text](image-255.png)
+# 65. Step-10 About Stereotype annotation
+![alt text](image-256.png)![alt text](image-257.png)
+# 66. Step11. Spring Annotation
+![alt text](image-258.png)![alt text](image-259.png)
+# 67. Step12. Review
+![alt text](image-260.png)
+# 68. Step13 Big Picture
+![alt text](image-261.png)![alt text](image-262.png)![alt text](image-263.png)![alt text](image-264.png)
+ # Quiz-8
+ ![alt text](image-265.png)![alt text](image-266.png)![alt text](image-267.png)![alt text](image-268.png)![alt text](image-269.png)![alt text](image-270.png)![alt text](image-271.png)![alt text](image-272.png)
+ # 69. Stay Up to date with technology changes
+ ![alt text](image-273.png)
  
  
  
