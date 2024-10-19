@@ -2195,17 +2195,997 @@ public class XmlConfigurationContextLauncherApplication {
  ![alt text](image-265.png)![alt text](image-266.png)![alt text](image-267.png)![alt text](image-268.png)![alt text](image-269.png)![alt text](image-270.png)![alt text](image-271.png)![alt text](image-272.png)
  # 69. Stay Up to date with technology changes
  ![alt text](image-273.png)
- 
- 
- 
- 
+# Section 10: Maven
+# 71. Step 01: Intro
+![alt text](image-274.png)![alt text](image-275.png)
+# 72. Step2. Creating Spring boot project with Maven
+![alt text](image-276.png)
+# 73. Step3
+![alt text](image-277.png)![alt text](image-278.png)![alt text](image-279.png)![alt text](image-280.png)![alt text](image-281.png)![alt text](image-282.png)![alt text](image-283.png)![alt text](image-284.png)![alt text](image-285.png)![alt text](image-286.png)![alt text](image-287.png)![alt text](image-288.png)![alt text](image-289.png)![alt text](image-290.png)
+# 74. Step-04
+![alt text](image-291.png)![alt text](image-292.png)![alt text](image-293.png)![alt text](image-294.png)![alt text](image-295.png)![alt text](image-296.png)![alt text](image-297.png)![alt text](image-298.png)![alt text](image-299.png)![alt text](image-300.png)![alt text](image-301.png)![alt text](image-302.png)![alt text](image-303.png)![alt text](image-304.png)
+# 75. Step5
+![alt text](image-305.png)![alt text](image-306.png)![alt text](image-307.png)![alt text](image-308.png)![alt text](image-309.png)
+# 76. Step-6
+![alt text](image-310.png)![alt text](image-311.png)![alt text](image-312.png)![alt text](image-313.png)![alt text](image-314.png)![alt text](image-315.png)![alt text](image-316.png)![alt text](image-317.png)
+# 77.Step-07 Maven Works
+![alt text](image-318.png)![alt text](image-319.png)![alt text](image-320.png)![alt text](image-321.png)![alt text](image-322.png)![alt text](image-323.png)![alt text](image-324.png)![alt text](image-325.png) 
+ # 78. Play with Maven Commands
+ ![alt text](image-326.png)![alt text](image-327.png)![alt text](image-328.png)![alt text](image-329.png)![alt text](image-330.png)![alt text](image-331.png)![alt text](image-332.png)![alt text](image-333.png)![alt text](image-334.png)![alt text](image-335.png)
+ # 79. Step9 How are spring project versioned?
+ ![alt text](image-336.png)![alt text](image-337.png)![alt text](image-338.png)![alt text](image-339.png)![alt text](image-340.png)![alt text](image-341.png)
+ # Quiz-9
+ ![alt text](image-342.png)![alt text](image-343.png)![alt text](image-344.png)
+ # 80. How to decide your goal
+![alt text](image-345.png)
+# Section-11 Getting started with Spring boot
+# 82. Step1
+![alt text](image-346.png)![alt text](image-347.png)
+# 83. step-2  
+![alt text](image-348.png)![alt text](image-349.png)![alt text](image-350.png)![alt text](image-351.png)
+# 84. Step-3 Setting up new spring boot project
+![alt text](image-352.png)![alt text](image-353.png)![alt text](image-354.png)
+# 85. Step-4 Build it
+![alt text](image-355.png)![alt text](image-356.png)![alt text](image-357.png)![alt text](image-358.png)![alt text](image-359.png)
+### CourseController
+```java
+package com.in28minutes.springboot.learn_spring_boot;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class CourseController {
+
+	@RequestMapping("/courses")
+	public List<Course> retrieveAllCourses() {
+
+		return Arrays.asList(
+				new Course(1, "Learn AWS", "in28minutes"), 
+				new Course(2, "Learn DevOps", "in28minutes")
+				);
+	}
+}
+```
+### Course
+```java
+package com.in28minutes.springboot.learn_spring_boot;
+
+public class Course {
+
+	private long id;
+	private String name;
+	private String author;
+
+	public Course(long id, String name, String author) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.author = author;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	@Override
+	public String toString() {
+		return "Course [id=" + id + ", name=" + name + ", author=" + author + "]";
+	}
+}
+```
+### LearnSpringBootApplication
+```java
+package com.in28minutes.springboot.learn_spring_boot;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class LearnSpringBootApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(LearnSpringBootApplication.class, args);
+	}
+
+}
+```
+# 86. Step-05 Understanding the goal of Spring boot
+![alt text](image-360.png)
+# 87. Step-6 Understanding Spring boot starter project
+![alt text](image-361.png)![alt text](image-362.png)![alt text](image-363.png)![alt text](image-364.png)![alt text](image-365.png)
+# 88. Step-7 Spring boot magic AutoConfiguration
+![alt text](image-366.png)![alt text](image-367.png)![alt text](image-368.png)![alt text](image-369.png)![alt text](image-370.png)![alt text](image-371.png)![alt text](image-372.png)![alt text](image-373.png)![alt text](image-374.png)![alt text](image-375.png)
+### application.properties
+```properties
+spring.application.name=learn-spring-boot
+
+logging.level.org.springframework=debug
+```
+# 89. Dev tools
+![alt text](image-376.png)![alt text](image-377.png)
+### pom.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.3.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.in28minutes.springboot</groupId>
+	<artifactId>learn-spring-boot</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>learn-spring-boot</name>
+	<description>Demo project for Spring Boot</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+```
+### CourseController
+```java
+package com.in28minutes.springboot.learn_spring_boot;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class CourseController {
+
+	@RequestMapping("/courses")
+	public List<Course> retrieveAllCourses() {
+
+		return Arrays.asList(
+				new Course(1, "Learn AWS", "in28minutes"), 
+				new Course(2, "Learn DevOps", "in28minutes"),
+				new Course(3, "Learn Azure", "in28minutes"),
+				new Course(4, "Learn GCP", "in28minutes")
+				);
+	}
+}
+```
+# 90. Step9 Get Production ready with Profiles
+![alt text](image-378.png)![alt text](image-379.png)![alt text](image-380.png)![alt text](image-381.png)![alt text](image-382.png)![alt text](image-383.png)![alt text](image-384.png)
+### application-prod.properties
+```properties
+logging.level.org.springframework=info
+```
+###  application-dev.properties
+```properties
+logging.level.org.springframework=trace
+```
+###  application-.properties
+```properties
+spring.application.name=learn-spring-boot
+
+logging.level.org.springframework=debug
+# spring.profiles.active=prod
+spring.profiles.active=dev
+```
+# 91. Step10 Configuration Properties
+![alt text](image-385.png)![alt text](image-386.png)![alt text](image-387.png)![alt text](image-388.png)![alt text](image-389.png)![alt text](image-390.png)
+### CurrencyServiceConfiguration
+```java
+package com.in28minutes.springboot.learn_spring_boot;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+@ConfigurationProperties(prefix = "currency-service")
+@Component
+public class CurrencyServiceConfiguration {
+
+	private String url;
+	private String userName;
+	private String key;
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+}
+```
+### CurrencyConfigurationController
+```java
+package com.in28minutes.springboot.learn_spring_boot;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class CurrencyConfigurationController {
+
+	@Autowired
+	private CurrencyServiceConfiguration configuration;
+	
+	@RequestMapping("/currency-configuration")
+	public CurrencyServiceConfiguration  retrieveAllCourses() {
+
+		return configuration;
+	}
+}
+```
+### application.properties
+```properties
+spring.application.name=learn-spring-boot
+
+logging.level.org.springframework=debug
+# spring.profiles.active=prod
+spring.profiles.active=dev
+
+currency-service.url=http://default1.in28minutes.com
+currency-service.userName=defaultUserName
+currency-service.key=defaultKey
+```
+### application-dev.properties
+```properties
+logging.level.org.springframework=trace
+
+currency-service.url=http://dev.in28minutes.com
+currency-service.userName=devUserName
+currency-service.key=devKey
+```
+# 92. Step11. Embedded Server
+![alt text](image-391.png)![alt text](image-392.png)![alt text](image-393.png)![alt text](image-394.png)![alt text](image-395.png)![alt text](image-396.png)
+# 93. Step12 Actuator
+![alt text](image-397.png)![alt text](image-398.png)![alt text](image-399.png)![alt text](image-400.png)![alt text](image-401.png)![alt text](image-402.png)![alt text](image-403.png)![alt text](image-404.png)![alt text](image-405.png)![alt text](image-406.png)![alt text](image-407.png)![alt text](image-408.png)![alt text](image-409.png)![alt text](image-410.png)
+### pom.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.3.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.in28minutes.springboot</groupId>
+	<artifactId>learn-spring-boot</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>learn-spring-boot</name>
+	<description>Demo project for Spring Boot</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+```
+### application.properties
+```properties
+spring.application.name=learn-spring-boot
+
+logging.level.org.springframework=debug
+# spring.profiles.active=prod
+spring.profiles.active=dev
+
+currency-service.url=http://default1.in28minutes.com
+currency-service.userName=defaultUserName
+currency-service.key=defaultKey
+
+# management.endpoints.web.exposure.include=*
+
+management.endpoints.web.exposure.include=health,metrics
+```
+# 94. Step 13  Spring vs Spring Mvc vs Spring boot
+![alt text](image-411.png)
+# 95. Step14 Review
+![alt text](image-412.png)
+# Quiz-10
+![alt text](image-413.png)![alt text](image-414.png)![alt text](image-415.png)
+# 96. Story of in28minutes
+![alt text](image-416.png)
+# Section-12 JPA & Hibernate with Spring
+# 98. Step-01
+![alt text](image-417.png)![alt text](image-418.png)
+# 99. Step-2 Setup
+![alt text](image-419.png)![alt text](image-420.png)
+# 100. Step-3 Launch H2 console & Creating table in H2
+![alt text](image-421.png)![alt text](image-422.png)![alt text](image-423.png)![alt text](image-424.png)![alt text](image-425.png)![alt text](image-426.png)![alt text](image-427.png)![alt text](image-428.png)![alt text](image-429.png)
+# 101. Step-4 Spring Jdbc
+![alt text](image-430.png)![alt text](image-431.png)![alt text](image-432.png)![alt text](image-433.png)![alt text](image-434.png)![alt text](image-435.png)
+# 102. Step-5 Inserting hardcoded data using Spring JDBC
+![alt text](image-436.png)![alt text](image-437.png)![alt text](image-438.png)
+### application.properties
+```properties
+spring.application.name=learn-jpa-and-hibernate
+spring.h2.console.enabled=true
+spring.datasource.url=jdbc:h2:mem:testdb
+```
+### schema.sql
+```sql
+create table course
+(
+	id bigint not null,
+	name varchar(255) not null,
+	author varchar(255) not null,
+	primary key(id)
+);
+```
+### CourseJdbcRepository
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course.jdbc;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class CourseJdbcRepository {
+
+	@Autowired
+	private JdbcTemplate springJdbcTemplate;
+
+	private static String INSERT_QUERY = 
+			"""
+			  insert into course(id,name,author)
+			  values (1,'Learn AWS','in28minutes')
+		    """;
+
+	public void insert() {
+		springJdbcTemplate.update(INSERT_QUERY);
+	}
+}
+```
+### CourseJdbcCommandLineRunner
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course.jdbc;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CourseJdbcCommandLineRunner implements CommandLineRunner{
+
+	@Autowired
+	private CourseJdbcRepository repository;
+	
+	@Override
+	public void run(String... args) throws Exception {
+		repository.insert();		
+	}
+
+}
+```
+# 103.Step-6 Inserting and Deleting Data
+![alt text](image-439.png)![alt text](image-440.png)![alt text](image-441.png)![alt text](image-442.png)![alt text](image-443.png)![alt text](image-444.png)![alt text](image-445.png)
+## Inserting Course Object
+### Course
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course;
+
+public class Course {
+
+	private long id;
+	private String name;
+	private String author;
+	
+	
+	public Course() {
+		
+	}
+	public Course(long id, String name, String author) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.author = author;
+	}
+	
+	public long getId() {
+		return id;
+	}
+	public String getName() {
+		return name;
+	}
+	public String getAuthor() {
+		return author;
+	}
+
+	@Override
+	public String toString() {
+		return "Course [id=" + id + ", name=" + name + ", author=" + author + "]";
+	}
+}
+```
+### CourseJdbcRepository
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course.jdbc;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.in28minutes.springboot.learn_jpa_and_hibernate.course.Course;
+
+@Repository
+public class CourseJdbcRepository {
+
+	@Autowired
+	private JdbcTemplate springJdbcTemplate;
+
+	private static String INSERT_QUERY = 
+			"""
+			  insert into course(id,name,author)
+			  values (?,?,?);
+		    """;
+
+	public void insert(Course course) {
+		springJdbcTemplate.update(INSERT_QUERY,course.getId(),course.getName(),course.getAuthor());
+	}
+}
+```
+### CourseJdbcCommandLineRunner
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course.jdbc;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+import com.in28minutes.springboot.learn_jpa_and_hibernate.course.Course;
+
+@Component
+public class CourseJdbcCommandLineRunner implements CommandLineRunner{
+
+	@Autowired
+	private CourseJdbcRepository repository;
+	
+	@Override
+	public void run(String... args) throws Exception {
+		repository.insert(new Course(1, "learn AWs Now!", "in28Min"));	
+		repository.insert(new Course(2, "learn Azure Now!", "in28Min"));	
+		repository.insert(new Course(3, "learn DevOps Now!", "in28Min"));	
+	}
+}
+```
+## Deleting Query
+### CourseJdbcRepository
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course.jdbc;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.in28minutes.springboot.learn_jpa_and_hibernate.course.Course;
+
+@Repository
+public class CourseJdbcRepository {
+
+	@Autowired
+	private JdbcTemplate springJdbcTemplate;
+
+	private static String INSERT_QUERY = 
+			"""
+			  insert into course(id,name,author)
+			  values (?,?,?);
+		    """;
+	
+	private static String DELETE_QUERY = 
+			"""
+			  delete from course
+			    where id = ?;
+		    """;
+
+	public void insert(Course course) {
+		springJdbcTemplate.update(INSERT_QUERY,course.getId(),course.getName(),course.getAuthor());
+	}
+	
+	public void deleteById(long id) {
+		springJdbcTemplate.update(DELETE_QUERY,id);
+	}
+}
+```
+###  CourseJdbcCommandLineRunner
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course.jdbc;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+import com.in28minutes.springboot.learn_jpa_and_hibernate.course.Course;
+
+@Component
+public class CourseJdbcCommandLineRunner implements CommandLineRunner{
+
+	@Autowired
+	private CourseJdbcRepository repository;
+	
+	@Override
+	public void run(String... args) throws Exception {
+		repository.insert(new Course(1, "learn AWs Now!", "in28Min"));	
+		repository.insert(new Course(2, "learn Azure Now!", "in28Min"));	
+		repository.insert(new Course(3, "learn DevOps Now!", "in28Min"));	
+		
+		repository.deleteById(1);
+	}
+}
+```
+# 104. Querying Data using Spring JDBC
+![alt text](image-446.png)![alt text](image-447.png)![alt text](image-448.png)![alt text](image-449.png)![alt text](image-450.png)![alt text](image-451.png)![alt text](image-452.png)
+### Course
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course;
+
+public class Course {
+
+	private long id;
+	private String name;
+	private String author;
+	
+	
+	public Course() {
+		
+	}
+	public Course(long id, String name, String author) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.author = author;
+	}
+	
+	public long getId() {
+		return id;
+	}
+	public String getName() {
+		return name;
+	}
+	public String getAuthor() {
+		return author;
+	}
+	
+	public void setId(long id) {
+		this.id = id;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	@Override
+	public String toString() {
+		return "Course [id=" + id + ", name=" + name + ", author=" + author + "]";
+	}
+}
+```
+### CourseJdbcRepository
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course.jdbc;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.in28minutes.springboot.learn_jpa_and_hibernate.course.Course;
+
+@Repository
+public class CourseJdbcRepository {
+
+	@Autowired
+	private JdbcTemplate springJdbcTemplate;
+
+	private static String INSERT_QUERY = 
+			"""
+			  insert into course(id,name,author)
+			  values (?,?,?);
+		    """;
+	
+	private static String DELETE_QUERY = 
+			"""
+			  delete from course
+			    where id = ?;
+		    """;
+	
+	private static String SELECT_QUERY = 
+			"""
+			  select * from course
+			    where id = ?;
+		    """;
+
+	public void insert(Course course) {
+		springJdbcTemplate.update(INSERT_QUERY,course.getId(),course.getName(),course.getAuthor());
+	}
+	
+	public void deleteById(long id) {
+		springJdbcTemplate.update(DELETE_QUERY,id);
+	}
+	
+	public Course findById(long id) {
+		return springJdbcTemplate.queryForObject(SELECT_QUERY,
+								new BeanPropertyRowMapper<>(Course.class) ,id);
+	}
+}
+```
+### CourseJdbcCommandLineRunner
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course.jdbc;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+import com.in28minutes.springboot.learn_jpa_and_hibernate.course.Course;
+
+@Component
+public class CourseJdbcCommandLineRunner implements CommandLineRunner{
+
+	@Autowired
+	private CourseJdbcRepository repository;
+	
+	@Override
+	public void run(String... args) throws Exception {
+		repository.insert(new Course(1, "learn AWs Now!", "in28Min"));	
+		repository.insert(new Course(2, "learn Azure Now!", "in28Min"));	
+		repository.insert(new Course(3, "learn DevOps Now!", "in28Min"));	
+		
+		repository.deleteById(1);
+		
+		System.out.println("=============>" +repository.findById(2));
+		System.out.println("=============>" +repository.findById(3));
+	}
+
+}
+```
+# 105. Step8 Getting started with JPA and Entity Manager.
+![alt text](image-453.png)![alt text](image-454.png)![alt text](image-455.png)![alt text](image-456.png)![alt text](image-457.png)![alt text](image-458.png)![alt text](image-459.png)![alt text](image-460.png)
+### application.properties
+```properties
+spring.application.name=learn-jpa-and-hibernate
+spring.h2.console.enabled=true
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.jpa.show-sql=true
+```
+### Course
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
+public class Course {
+
+	@Id
+	private long id;	
+
+	private String name;
+	private String author;
+	
+	
+	public Course() {
+		
+	}
+	public Course(long id, String name, String author) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.author = author;
+	}
+	
+	public long getId() {
+		return id;
+	}
+	public String getName() {
+		return name;
+	}
+	public String getAuthor() {
+		return author;
+	}
+	
+	public void setId(long id) {
+		this.id = id;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	@Override
+	public String toString() {
+		return "Course [id=" + id + ", name=" + name + ", author=" + author + "]";
+	}
+}
+```
+### CourseJpaRepository
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course.jpa;
+
+import org.springframework.stereotype.Repository;
+
+import com.in28minutes.springboot.learn_jpa_and_hibernate.course.Course;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+
+@Repository
+@Transactional
+public class CourseJpaRepository {
+
+	@PersistenceContext
+	private EntityManager entityManager;
+	
+	public void insert(Course course) {
+		entityManager.merge(course);
+	}
+	
+	public Course findById(long id) {
+		return entityManager.find(Course.class, id); 
+	}
+	
+	public void deleteById(long id) {
+		Course course = entityManager.find(Course.class, id); 
+		 entityManager.remove(course);; 
+	}
+}
+```
+### CourseJpaCommandLineRunner
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course.jdbc;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+import com.in28minutes.springboot.learn_jpa_and_hibernate.course.Course;
+import com.in28minutes.springboot.learn_jpa_and_hibernate.course.jpa.CourseJpaRepository;
+
+@Component
+public class CourseJpaCommandLineRunner implements CommandLineRunner{
+
+	@Autowired
+	private CourseJpaRepository repository;
+	
+	@Override
+	public void run(String... args) throws Exception {
+		repository.insert(new Course(1, "learn AWs Now1!", "in28Min"));	
+		repository.insert(new Course(2, "learn Azure Now1!", "in28Min"));	
+		repository.insert(new Course(3, "learn DevOps Now1!", "in28Min"));	
+		
+		repository.deleteById(1);
+		
+		System.out.println("=============>" +repository.findById(2));
+		System.out.println("=============>" +repository.findById(3));
+	}
+
+}
+```
+# 106. step9. Exploring Magic of Spring Data JPA
+![alt text](image-461.png)![alt text](image-462.png)
+# 107. Step-10 Spring Data JPA
+![alt text](image-463.png)![alt text](image-464.png)![alt text](image-465.png)
+### CourseSpringDataJpaRepository
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CourseSpringDataJpaRepository extends JpaRepository<Course, Long> {
+
+}
+```
+### CourseCommandLineRunner
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+import com.in28minutes.springboot.learn_jpa_and_hibernate.course.Course;
+import com.in28minutes.springboot.learn_jpa_and_hibernate.course.CourseSpringDataJpaRepository;
+
+@Component
+public class CourseCommandLineRunner implements CommandLineRunner {
+
+	@Autowired
+	private CourseSpringDataJpaRepository repository;
+
+	@Override
+	public void run(String... args) throws Exception {
+		repository.save(new Course(1, "learn AWs Now! JPA", "in28Min"));
+		repository.save(new Course(2, "learn Azure Now! JPA", "in28Min"));	
+		repository.save(new Course(3, "learn DevOps Now! JPA", "in28Min"));	
+		
+		repository.deleteById(1L);
+		
+		System.out.println("---> "+repository.findById(2l));
+		System.out.println("---> "+repository.findById(3L));
+	}
+
+}
+```
+# 108. Step11. Exploring features of SpringDataJPA
+![alt text](image-466.png)![alt text](image-467.png)![alt text](image-468.png)![alt text](image-469.png)
+
+# 108
+### CourseSpringDataJpaRepository
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CourseSpringDataJpaRepository extends JpaRepository<Course, Long> {
+
+	List<Course> findByAuthor(String author);
+
+	List<Course> findByName(String name);
+
+}
+```
+### CourseCommandLineRunner
+```java
+package com.in28minutes.springboot.learn_jpa_and_hibernate.course.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+import com.in28minutes.springboot.learn_jpa_and_hibernate.course.Course;
+import com.in28minutes.springboot.learn_jpa_and_hibernate.course.CourseSpringDataJpaRepository;
+
+@Component
+public class CourseCommandLineRunner implements CommandLineRunner {
+
+	@Autowired
+	private CourseSpringDataJpaRepository repository;
+
+	@Override
+	public void run(String... args) throws Exception {
+		repository.save(new Course(1, "learn AWs Now! JPA", "in28Min"));
+		repository.save(new Course(2, "learn Azure Now! JPA", "in28Min"));
+		repository.save(new Course(3, "learn DevOps Now! JPA", "in28Min"));
+		repository.deleteById(1L);
+		System.out.println("---> " + repository.findById(2l));
+		System.out.println("---> " + repository.findById(3L));
+		System.out.println("**************************************");
+		System.out.println("======>" + repository.findAll());
+		System.out.println("======>" + repository.count());
+		System.out.println("======>" + repository.findByAuthor("in28Min"));
+		System.out.println("======>" + repository.findByAuthor(""));
+		System.out.println("======>" + repository.findByName("learn DevOps Now! JPA"));
+		System.out.println("======>" + repository.findByName(""));
+		System.out.println("======>" + repository.findByName("learn AWs Now! JPA"));
+	}
+}
+```
+# 109. Step12 Understand diff between Hibernate and JPA
+![alt text](image-470.png)![alt text](image-471.png)![alt text](image-472.png)
+# 110.  What should I do, when I face challenge.
+![alt text](image-473.png)
 
 
- 
- 
- 
- 
- 
  
  
 
