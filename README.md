@@ -3184,6 +3184,242 @@ public class CourseCommandLineRunner implements CommandLineRunner {
 ![alt text](image-470.png)![alt text](image-471.png)![alt text](image-472.png)
 # 110.  What should I do, when I face challenge.
 ![alt text](image-473.png)
+# Section-13 Web App
+# 112. Step0
+![alt text](image-474.png)![alt text](image-475.png)
+# 113. Step1 
+![alt text](image-476.png)
+# 114. Step2 
+![alt text](image-477.png)![alt text](image-478.png)![alt text](image-479.png)
+# 115. Step-3 Return Simple HelloWorld response from our web app
+![alt text](image-480.png)![alt text](image-481.png)![alt text](image-482.png)![alt text](image-483.png)![alt text](image-484.png)
+
+### SayHelloController
+```java
+package com.in28minutes.springboot.myfirstwebapp.hello;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class SayHelloController {
+	
+	@RequestMapping("say-hello")
+	@ResponseBody
+	public String sayHello() {
+		return "Hello! What are you learning today";
+	}
+
+}
+```
+# 116. Step4-1 Enhancing Controller to provide html response
+![alt text](image-485.png)![alt text](image-486.png)![alt text](image-487.png)
+### SayHelloController
+```java
+package com.in28minutes.springboot.myfirstwebapp.hello;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class SayHelloController {
+
+	@RequestMapping("say-hello")
+	@ResponseBody
+	public String sayHello() {
+		return "Hello! What are you learning today1";
+	}
+	
+	@RequestMapping("say-hello-html")
+	@ResponseBody
+	public String sayHelloHtml() {
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("<html>");
+		sb.append("<head>");
+		sb.append("<title>");
+		sb.append("My first Html Page1");
+		sb.append("</title>");
+		sb.append("</head>");
+		sb.append("<body>");
+		sb.append("My first Html page with body1");
+		sb.append("</body>");
+		sb.append("</html>");
+		
+		return sb.toString();
+	}
+}
+```
+# 117. Step4-2 
+https://github.com/in28minutes/spring-boot-master-class
+![alt text](image-488.png)![alt text](image-489.png)![alt text](image-490.png)
+# 119. Step5.  Redirect to Jsp
+![alt text](image-491.png)![alt text](image-492.png)![alt text](image-493.png)![alt text](image-494.png)![alt text](image-495.png)![alt text](image-496.png)![alt text](image-497.png)![alt text](image-498.png)![alt text](image-499.png)![alt text](image-500.png)![alt text](image-501.png)![alt text](image-502.png)![alt text](image-503.png)
+### pom.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.3.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.in28minutes.springboot</groupId>
+	<artifactId>myfirstwebapp</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>myfirstwebapp</name>
+	<description>Demo project for Spring Boot</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+```
+### sayHello.jsp
+```jsp
+<html>
+	<head>
+		<title>My first Html Page -Jsp1</title>
+	</head>
+	
+	<body>
+		My first Html page with body -Jsp12
+	</body>
+</html>
+```
+### SayHelloController
+```java
+package com.in28minutes.springboot.myfirstwebapp.hello;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class SayHelloController {
+
+	@RequestMapping("say-hello")
+	@ResponseBody
+	public String sayHello() {
+		return "Hello! What are you learning today1";
+	}
+	
+	@RequestMapping("say-hello-html")
+	@ResponseBody
+	public String sayHelloHtml() {
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("<html>");
+		sb.append("<head>");
+		sb.append("<title>");
+		sb.append("My first Html Page1");
+		sb.append("</title>");
+		sb.append("</head>");
+		sb.append("<body>");
+		sb.append("My first Html page with body1");
+		sb.append("</body>");
+		sb.append("</html>");
+		
+		return sb.toString();
+	}
+	
+	
+	@RequestMapping("say-hello-jsp")
+	public String sayHelloJsp() {
+		return "sayHello";
+	}
+}
+```
+### application.properties
+```properties
+spring.application.name=myfirstwebapp
+
+spring.mvc.view.prefix=/WEB-INF/jsp/
+spring.mvc.view.suffix=.jsp
+
+logging.level.org.springframework=debug
+```
+# 120. Step-6
+![alt text](image-504.png)![alt text](image-505.png)
+### login.jsp
+```jsp
+<html>
+	<head>
+		<title> Login Page</title>
+	</head>
+	<body>
+		Welcome to the login page!123
+	</body>
+</html>
+```
+### LoginController
+```java
+package com.in28minutes.springboot.myfirstwebapp.login;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class LoginController {
+	
+	@RequestMapping("login")
+	public String getLoginPage() {
+		return "login";
+	}
+
+}
+```
 
 
  
