@@ -3420,8 +3420,228 @@ public class LoginController {
 
 }
 ```
+# 121. Step-7 How does Request Response work.
+![alt text](image-506.png)![alt text](image-507.png)![alt text](image-508.png)![alt text](image-509.png)![alt text](image-510.png)![alt text](image-511.png)![alt text](image-512.png)![alt text](image-513.png)![alt text](image-514.png)
+# 122. Step8 QueryParam and RequestParam
+![alt text](image-515.png)![alt text](image-516.png)![alt text](image-517.png)![alt text](image-518.png)![alt text](image-519.png)![alt text](image-520.png)
+### LoginController
+```java
+package com.in28minutes.springboot.myfirstwebapp.login;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
- 
+@Controller
+public class LoginController {
+
+	@RequestMapping("login")
+	public String getLoginPage(@RequestParam String name, ModelMap model) {
+
+		model.put("name", name);
+
+		System.out.println("Request param is ======>" + name);
+		return "login";
+	}
+}
+```
+###
+```jsp
+<html>
+	<head>
+		<title> Login Page</title>
+	</head>
+	<body>
+		Welcome to the login page ${name}!1
+	</body>
+</html>
+```
+# 123. Step9 Logging
+![alt text](image-521.png)![alt text](image-522.png)![alt text](image-523.png)![alt text](image-524.png)![alt text](image-525.png)![alt text](image-526.png)![alt text](image-527.png)![alt text](image-528.png)![alt text](image-529.png)![alt text](image-530.png)![alt text](image-531.png)![alt text](image-532.png)![alt text](image-533.png)
+# 124 Step10. Understanding Dispatcher Servlet, model1 etc
+![alt text](image-534.png)![alt text](image-535.png)![alt text](image-536.png)![alt text](image-537.png)![alt text](image-538.png)![alt text](image-539.png)![alt text](image-540.png)![alt text](image-541.png)
+# 125. Step11 Creating a login Form
+![alt text](image-542.png)![alt text](image-543.png)![alt text](image-544.png)![alt text](image-545.png)![alt text](image-546.png)![alt text](image-547.png)
+### LoginController
+```java
+package com.in28minutes.springboot.myfirstwebapp.login;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class LoginController {
+
+	@RequestMapping("login")
+	public String getLoginPage() {
+
+		return "login";
+	}
+}
+```
+### login.jsp
+```jsp
+<html>
+	<head>
+		<title> Login Page</title>
+	</head>
+	<body>
+		Welcome to the login page !
+		<form method="post">
+			Name: <input type="text" name="name">
+			Password:<input type="password" name="password">
+			<input type="submit">
+		</form>
+	</body>
+</html>
+```
+# 126. Step12. Displaying login Credential in a Jsp using Model.
+![alt text](image-548.png)![alt text](image-549.png)![alt text](image-550.png)![alt text](image-551.png)![alt text](image-552.png)![alt text](image-553.png)![alt text](image-554.png)![alt text](image-555.png)![alt text](image-556.png)![alt text](image-557.png)![alt text](image-558.png)
+### LoginController
+```java
+package com.in28minutes.springboot.myfirstwebapp.login;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class LoginController {
+
+	@RequestMapping(value = "login",method = RequestMethod.GET)
+	public String getLoginPage() {
+
+		return "login";
+	}
+	
+	@RequestMapping(value = "login",method = RequestMethod.POST)
+	public String gotoWelcomePage(@RequestParam String name,
+			@RequestParam String password,
+			ModelMap model) {
+		
+		model.put("name", name);
+		model.put("password", password);
+		
+		return "welcome";
+	}
+
+}
+```
+### welcome.jsp
+```jsp
+<html>
+	<head>
+		<title> Welcome Page</title>
+	</head>
+	<body>
+		<div> Welcome to in28minutes</div> 	
+		<div>Your Name : ${name }</div>		
+		<div>Your Password : ${password }</div>		
+	</body>
+</html>
+```
+# 127: Step13 Add harcoded validation of userId an Password.
+![alt text](image-559.png)![alt text](image-560.png)![alt text](image-561.png)![alt text](image-562.png)![alt text](image-563.png)![alt text](image-564.png)![alt text](image-565.png)![alt text](image-566.png)![alt text](image-567.png)![alt text](image-568.png)
+### AuthenticationService
+```java
+package com.in28minutes.springboot.myfirstwebapp.login;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthenticationService {
+	
+	
+	public boolean authenticate(String userName,String password) {
+		boolean isValidUserName = userName.equalsIgnoreCase("in28minutes");
+		boolean isValidPassword = password.equalsIgnoreCase("dummy");
+		
+		return isValidUserName && isValidPassword;
+	}
+
+}
+```
+### LoginController
+```java
+package com.in28minutes.springboot.myfirstwebapp.login;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class LoginController {
+	
+	private AuthenticationService authenticationService;
+	
+	
+
+	public LoginController(AuthenticationService authenticationService) {
+		super();
+		this.authenticationService = authenticationService;
+	}
+
+	@RequestMapping(value = "login",method = RequestMethod.GET)
+	public String getLoginPage() {
+
+		return "login";
+	}
+	
+	@RequestMapping(value = "login",method = RequestMethod.POST)
+	public String gotoWelcomePage(@RequestParam String name,
+			@RequestParam String password,
+			ModelMap model) {
+		
+		if(authenticationService.authenticate(name, password)) {
+			model.put("name", name);
+			model.put("password", password);
+			
+			return "welcome";
+		}
+		
+		model.put("errorMessage", "Invalid Credentials! Please try again....");
+		
+		return "login";
+	}
+
+}
+```
+### welcome.jsp
+```jsp
+<html>
+	<head>
+		<title> Welcome Page</title>
+	</head>
+	<body>
+		<div> Welcome to in28minutes</div> 	
+		<div>Your Name : ${name }</div>			
+	</body>
+</html>
+```
+### login.jsp
+```jsp
+<html>
+	<head>
+		<title> Login Page</title>
+	</head>
+	<body>
+		Welcome to the login page !
+		<pre>${errorMessage }</pre>
+		<form method="post">
+			Name: <input type="text" name="name">
+			Password:<input type="password" name="password">
+			<input type="submit">
+		</form>
+	</body>
+</html>
+```
+
+# aabcc
+
  
 
