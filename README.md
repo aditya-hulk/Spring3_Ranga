@@ -3640,7 +3640,153 @@ public class LoginController {
 	</body>
 </html>
 ```
+# 128. Step14. ToDo Service
+![alt text](image-569.png)![alt text](image-570.png)![alt text](image-571.png)![alt text](image-572.png)![alt text](image-573.png)![alt text](image-574.png)
+# 129. Step15. Creating first version of List Todos page
+![alt text](image-575.png)![alt text](image-576.png)![alt text](image-577.png)
+# 128 and 129
+### Todo
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
 
+import java.time.LocalDate;
+
+public class Todo {
+
+	private int id;
+	private String username;
+	private String description;
+	private LocalDate targetDate;
+	private boolean done;
+
+	public Todo(int id, String username, String description, LocalDate targetDate, boolean done) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.description = description;
+		this.targetDate = targetDate;
+		this.done = done;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public LocalDate getTargetDate() {
+		return targetDate;
+	}
+
+	public void setTargetDate(LocalDate targetDate) {
+		this.targetDate = targetDate;
+	}
+
+	public boolean isDone() {
+		return done;
+	}
+
+	public void setDone(boolean done) {
+		this.done = done;
+	}
+
+	@Override
+	public String toString() {
+		return "Todo [id=" + id + ", username=" + username + ", description=" + description + ", targetDate="
+				+ targetDate + ", done=" + done + "]";
+	}
+
+}
+```
+### TodoService
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class TodoService {
+
+	private static List<Todo> todos = new ArrayList<>();
+
+	static {
+		todos.add(new Todo(1, "in28min", "Learn AWS", LocalDate.now().plusYears(1), false));
+		todos.add(new Todo(2, "in28min", "Learn DevOps", LocalDate.now().plusYears(2), false));
+		todos.add(new Todo(3, "in28min", "Learn Full Stack Development", LocalDate.now().plusYears(3), false));
+	}
+	
+	public List<Todo> findByUsername(String username){
+		return todos;
+	}
+}
+```
+### TodoController
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class TodoController {
+
+	private TodoService todoService;
+
+	public TodoController(TodoService todoService) {
+		super();
+		this.todoService = todoService;
+	}
+	
+	@RequestMapping("list-todo")
+	public String listAllTodo(ModelMap model) {
+		
+		List<Todo> todos = todoService.findByUsername("in28min");
+		
+		model.addAttribute("todos", todos);
+		
+		return "listTodo";
+	}
+}
+```
+### listTodo.jsp
+```jsp
+<html>
+	<head>
+		<title> Todo Page</title>
+	</head>
+	<body>
+		<div> Welcome to in28minutes</div> 	
+		<div>Your todos are ${todos }</div>			
+	</body>
+</html>
+```
+# 131. Step16. Session vs Model vs Request - @SessionAttributes
+![alt text](image-578.png)![alt text](image-579.png)![alt text](image-580.png)![alt text](image-581.png)![alt text](image-582.png)![alt text](image-583.png)![alt text](image-584.png)![alt text](image-585.png)![alt text](image-586.png)![alt text](image-587.png)![alt text](image-588.png)![alt text](image-589.png)![alt text](image-590.png)
 # aabcc
 
  
