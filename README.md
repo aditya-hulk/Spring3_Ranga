@@ -3787,6 +3787,265 @@ public class TodoController {
 ```
 # 131. Step16. Session vs Model vs Request - @SessionAttributes
 ![alt text](image-578.png)![alt text](image-579.png)![alt text](image-580.png)![alt text](image-581.png)![alt text](image-582.png)![alt text](image-583.png)![alt text](image-584.png)![alt text](image-585.png)![alt text](image-586.png)![alt text](image-587.png)![alt text](image-588.png)![alt text](image-589.png)![alt text](image-590.png)
+# 132. Course Update
+![alt text](image-591.png)
+Details: https://github.com/in28minutes/master-spring-and-spring-boot/blob/main/spring-boot-3.2.x-changes.md
+
+![alt text](image-592.png)
+# 133. Step 17. Adding JSTL to Spring Boot and showing Todos in table
+![alt text](image-593.png)![alt text](image-594.png)![alt text](image-595.png)![alt text](image-596.png)![alt text](image-597.png)![alt text](image-598.png)![alt text](image-599.png)![alt text](image-600.png)
+### TodoController
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+@Controller
+@SessionAttributes("name")
+public class TodoController {
+
+	private TodoService todoService;
+
+	public TodoController(TodoService todoService) {
+		super();
+		this.todoService = todoService;
+	}
+	
+	@RequestMapping("list-todo")
+	public String listAllTodo(ModelMap model) {
+		
+		List<Todo> todos = todoService.findByUsername("in28min");
+		
+		model.addAttribute("todos", todos);
+		
+		return "listTodo";
+	}
+}
+```
+###  LoginController
+```java
+package com.in28minutes.springboot.myfirstwebapp.login;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+@Controller
+@SessionAttributes("name")
+public class LoginController {
+	
+	private AuthenticationService authenticationService;
+	
+	
+
+	public LoginController(AuthenticationService authenticationService) {
+		super();
+		this.authenticationService = authenticationService;
+	}
+
+	@RequestMapping(value = "login",method = RequestMethod.GET)
+	public String getLoginPage() {
+
+		return "login";
+	}
+	
+	@RequestMapping(value = "login",method = RequestMethod.POST)
+	public String gotoWelcomePage(@RequestParam String name,
+			@RequestParam String password,
+			ModelMap model) {
+		
+		if(authenticationService.authenticate(name, password)) {
+			model.put("name", name);
+			model.put("password", password);
+			
+			return "welcome";
+		}
+		
+		model.put("errorMessage", "Invalid Credentials! Please try again....");
+		
+		return "login";
+	}
+
+}
+```
+### pom.xml
+```xml
+
+		<dependency>
+			<groupId>jakarta.servlet.jsp.jstl</groupId>
+			<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.web</groupId>
+			<artifactId>jakarta.servlet.jsp.jstl</artifactId>
+		</dependency>
+
+```
+### login.jsp
+```jsp
+<html>
+	<head>
+		<title> Login Page</title>
+	</head>
+	<body>
+		Welcome to the login page !
+		<pre>${errorMessage }</pre>
+		<form method="post">
+			Name: <input type="text" name="name">
+			Password:<input type="password" name="password">
+			<input type="submit">
+		</form>
+	</body>
+</html>
+```
+### Welocme.jsp
+```jsp
+<html>
+	<head>
+		<title> Welcome Page</title>
+	</head>
+	<body>
+		<div> Welcome ${name }</div> 	
+		<hr>
+		<div><a href="list-todo">Manage</a>Your Todos</div>
+				
+	</body>
+</html>
+```
+### todo.jsp
+```jsp
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<html>
+	<head>
+		<title> List Todos Page</title>
+	</head>
+	<body>
+		<div> Welcome ${name }</div> 	
+		<hr>
+		<h1>Your Todos</h1>		
+		<table>
+			<thead>
+				<tr>
+					<th>id</th>
+				  	<th>Description</th>
+					<th>Target Date</th>
+					<th>Is Done?</th>
+				</tr>
+			</thead>
+			<tbody>
+			  <c:forEach items="${todos}" var="todo">
+				<tr>
+					<td>${todo.id}</td>
+					<td>${todo.description}</td>
+					<td>${todo.targetDate}</td>
+					<td>${todo.done}</td>
+				</tr>
+			   </c:forEach>
+			</tbody>
+		</table>
+	</body>
+</html>
+```
+# 135. Step18. Adding BootStrap CSS
+![alt text](image-601.png)![alt text](image-602.png)![alt text](image-603.png)![alt text](image-604.png)![alt text](image-605.png)![alt text](image-606.png)![alt text](image-607.png)![alt text](image-608.png)![alt text](image-609.png)
+# 136. Step19 Formatting JSP pages
+![alt text](image-610.png)![alt text](image-611.png)![alt text](image-612.png)![alt text](image-613.png)![alt text](image-614.png)
+# 135 & 136
+### pom.xml
+```xml
+<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>5.1.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+			<version>3.6.0</version>
+		</dependency>
+```
+### listTodo.jsp
+```jsp
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<html>
+<head>
+<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css"
+	rel="stylesheet">
+<title>List Todos Page</title>
+</head>
+<body>
+
+	<div class="container">
+		<h1>Your Todos</h1>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>Description</th>
+					<th>Target Date</th>
+					<th>Is Done?</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${todos}" var="todo">
+					<tr>
+						<td>${todo.id}</td>
+						<td>${todo.description}</td>
+						<td>${todo.targetDate}</td>
+						<td>${todo.done}</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</div>
+	<script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+	<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+</body>
+</html>
+```
+### login.jsp
+```jsp
+<html>
+<head>
+<title>Login Page</title>
+</head>
+<body>
+	<div class="container">
+		<h1>Login</h1>
+		<pre>${errorMessage }</pre>
+		<form method="post">
+			Name: <input type="text" name="name"> Password:<input
+				type="password" name="password"> <input type="submit">
+		</form>
+	</div>
+</body>
+</html>
+```
+### welcome.jsp
+```jsp
+<html>
+<head>
+<title>Welcome Page</title>
+</head>
+<body>
+	<div class="container">
+		<h1>Welcome ${name }</h1>
+		<a href="list-todo">Manage</a>Your Todos
+	</div>
+</body>
+</html>
+```
+
 # aabcc
 
  
