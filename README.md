@@ -4015,38 +4015,1929 @@ public class LoginController {
 ```
 ### login.jsp
 ```jsp
+<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css"
+	rel="stylesheet">
 <html>
 <head>
 <title>Login Page</title>
 </head>
+
 <body>
 	<div class="container">
-		<h1>Login</h1>
+		<h1> Login</h1> 
 		<pre>${errorMessage }</pre>
 		<form method="post">
-			Name: <input type="text" name="name"> Password:<input
-				type="password" name="password"> <input type="submit">
+			<input type="text" name="username"> 
+			<input type="password" name="password"> 
+			<input type="submit">
 		</form>
 	</div>
+	<script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+	<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
 </body>
 </html>
 ```
 ### welcome.jsp
 ```jsp
+<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css"
+	rel="stylesheet">
 <html>
 <head>
 <title>Welcome Page</title>
 </head>
+
 <body>
 	<div class="container">
-		<h1>Welcome ${name }</h1>
-		<a href="list-todo">Manage</a>Your Todos
+		<h1>Welcome ${username }</h1>
+
+		<a href="list-todos">Manage</a> Your Todos
+
 	</div>
+ <script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+	<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
 </body>
 </html>
 ```
+# 137. Step20 Let’s Add new Todo
+![alt text](image-615.png)![alt text](image-616.png)![alt text](image-617.png)![alt text](image-618.png)![alt text](image-619.png)![alt text](image-620.png)![alt text](image-621.png)![alt text](image-622.png)![alt text](image-623.png)![alt text](image-624.png)
+# 138. Step-21 Add logic in Todo
+![alt text](image-625.png)![alt text](image-626.png)![alt text](image-627.png)![alt text](image-628.png)![alt text](image-629.png)
+# 137 & 138
+### listTodos.jsp
+```jsp
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<html>
 
-# aabcc
+<head>
+<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css"
+	rel="stylesheet">
+<title>List todo Page</title>
+</head>
 
- 
+<body>
+	<div class="container">
+		
+		<h1>Your todos are</h1>
+		<hr>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>Description</th>
+					<th>Target Date</th>
+					<th>Is Done?</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${listTodo}" var="todo">
+					<tr>
+						<td>${todo.id}</td>
+						<td>${todo.description}</td>
+						<td>${todo.targetDate}</td>
+						<td>${todo.done}</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+		<a href="add-todo" class="btn btn-success">Add Todo</a>
+	</div>
+	<script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+	<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
 
+</body>
+</html>
+```
+### TodoController.java
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+@Controller
+@SessionAttributes("username")
+public class TodoController {
+	
+	private TodoService todoService;
+
+	public TodoController(TodoService todoService) {
+		super();
+		this.todoService = todoService;
+	}
+	
+	@RequestMapping("list-todos")
+	public String getAllListedTodos(ModelMap model) {
+		
+		List<Todo> listTodo = todoService.findByUsername("in28minutes");
+		model.put("listTodo", listTodo);
+		return "listTodos";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.GET)
+	public String showNewTodoPage() {
+		return "todo";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.POST)
+	public String addNewTodo(@RequestParam String description, ModelMap model) {
+		
+		String username = (String) model.get("username");
+		todoService.addTodo(username, description, LocalDate.now().plusYears(1), false);
+		return "redirect:list-todos";
+	}
+
+}
+```
+### TodoService.java
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class TodoService {
+
+	private static List<Todo> todos = new ArrayList<>();
+	
+	private static int todoCount = 0;
+	
+	static {
+		todos.add(new Todo(++todoCount, "in28minutes", "Learn Aws", LocalDate.now().plusYears(1), false));
+		todos.add(new Todo(++todoCount, "in28minutes", "Learn Devops", LocalDate.now().plusYears(2), false));
+		todos.add(new Todo(++todoCount, "in28minutes", "Learn Full Stack", LocalDate.now().plusYears(3), false));
+	}
+	
+	public List<Todo> findByUsername(String username){
+		return todos;
+	}
+	
+	public void addTodo(String username,String description,LocalDate targetDate,boolean done) {
+		
+		Todo todo = new Todo(++todoCount, username, description, targetDate, done);
+		
+		todos.add(todo);
+	}
+}
+```
+### todo.jsp
+```jsp
+<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css"
+	rel="stylesheet">
+<html>
+<head>
+<title>Todo Page</title>
+</head>
+
+<body>
+	<div class="container">
+		<h1>Enter Todo Details</h1>
+		<form method="post">
+			Description: <input type="text" name="description" />
+			<input type="submit" class="btn btn-success">
+		</form>
+	</div>
+	<script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+	<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+</body>
+</html>
+```
+# 139. Step22 Validation 
+![alt text](image-630.png)![alt text](image-631.png)![alt text](image-632.png)![alt text](image-633.png)![alt text](image-634.png)![alt text](image-635.png)![alt text](image-636.png)![alt text](image-637.png)![alt text](image-638.png)![alt text](image-639.png)![alt text](image-640.png)![alt text](image-641.png)![alt text](image-642.png)![alt text](image-643.png)![alt text](image-644.png)![alt text](image-645.png)![alt text](image-646.png)![alt text](image-647.png)![alt text](image-648.png)![alt text](image-649.png)![alt text](image-650.png)
+# 139
+### pom.xml
+```xml
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+```
+### TodoController
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+@Controller
+@SessionAttributes("username")
+public class TodoController {
+	
+	private TodoService todoService;
+
+	public TodoController(TodoService todoService) {
+		super();
+		this.todoService = todoService;
+	}
+	
+	@RequestMapping("list-todos")
+	public String getAllListedTodos(ModelMap model) {
+		
+		List<Todo> listTodo = todoService.findByUsername("in28minutes");
+		model.put("listTodo", listTodo);
+		return "listTodos";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.GET)
+	public String showNewTodoPage(ModelMap model) {
+		String username = (String) model.get("username");
+		Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
+		model.put("todo", todo);
+		return "todo";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.POST)
+	public String addNewTodo( ModelMap model,Todo todo) {
+		
+		String username = (String) model.get("username");
+		todoService.addTodo(username, todo.getDescription(), LocalDate.now().plusYears(1), false);
+		return "redirect:list-todos";
+	}
+
+}
+```
+### todo.jsp
+```jsp
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<html>
+<head>
+<title>Todo Page</title>
+<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="container">
+		<h1>Enter Todo Details</h1>
+		<form:form method="post" modelAttribute="todo">
+			Description: <form:input type="text" path="description" required="required" />
+			<form:input type="hidden" path="id" />
+			<form:input type="hidden" path="done" />
+			<input type="submit" class="btn btn-success">
+		</form:form>
+	</div>
+	<script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+	<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+</body>
+</html>
+```
+# 140. Step23- Using Command Bean to implement NewTodo Page Validation
+![alt text](image-651.png)![alt text](image-652.png)![alt text](image-653.png)![alt text](image-654.png)![alt text](image-655.png)![alt text](image-656.png)![alt text](image-657.png)![alt text](image-658.png)![alt text](image-659.png)![alt text](image-660.png)![alt text](image-661.png)
+
+# 140
+### Todo.java
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+
+import jakarta.validation.constraints.Size;
+
+public class Todo {
+
+	private int id;
+	private String username;
+	
+	@Size(min = 10,message = "Requires at least 10 char")
+	private String description;
+	private LocalDate targetDate;
+	private boolean done;
+	public Todo(int id, String username, String description, LocalDate targetDate, boolean done) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.description = description;
+		this.targetDate = targetDate;
+		this.done = done;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public LocalDate getTargetDate() {
+		return targetDate;
+	}
+	public void setTargetDate(LocalDate targetDate) {
+		this.targetDate = targetDate;
+	}
+	public boolean isDone() {
+		return done;
+	}
+	public void setDone(boolean done) {
+		this.done = done;
+	}
+	@Override
+	public String toString() {
+		return "Todo [id=" + id + ", username=" + username + ", description=" + description + ", targetDate="
+				+ targetDate + ", done=" + done + "]";
+	}
+	
+}
+```
+### TodoController
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+import jakarta.validation.Valid;
+
+@Controller
+@SessionAttributes("username")
+public class TodoController {
+	
+	private TodoService todoService;
+
+	public TodoController(TodoService todoService) {
+		super();
+		this.todoService = todoService;
+	}
+	
+	@RequestMapping("list-todos")
+	public String getAllListedTodos(ModelMap model) {
+		
+		List<Todo> listTodo = todoService.findByUsername("in28minutes");
+		model.put("listTodo", listTodo);
+		return "listTodos";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.GET)
+	public String showNewTodoPage(ModelMap model) {
+		String username = (String) model.get("username");
+		Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
+		model.put("todo", todo);
+		return "todo";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.POST)
+	public String addNewTodo( ModelMap model,@Valid Todo todo,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return "todo";
+		}
+		String username = (String) model.get("username");
+		todoService.addTodo(username, todo.getDescription(), LocalDate.now().plusYears(1), false);
+		return "redirect:list-todos";
+	}
+
+}
+```
+### Todo.jsp
+```jsp
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<html>
+<head>
+<title>Todo Page</title>
+<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="container">
+		<h1>Enter Todo Details</h1>
+		<form:form method="post" modelAttribute="todo">
+			Description: <form:input type="text" path="description" required="required" />
+			<form:errors type="text" path="description" cssClass="text-warning" />
+			<form:input type="hidden" path="id" />
+			<form:input type="hidden" path="done" />
+			<input type="submit" class="btn btn-success">
+		</form:form>
+	</div>
+	<script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+	<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+</body>
+</html>
+```
+# 141. Step24 – Implementing Delete Todo Feature
+![alt text](image-662.png)![alt text](image-663.png)![alt text](image-664.png)![alt text](image-665.png)![alt text](image-666.png)![alt text](image-667.png)![alt text](image-668.png)![alt text](image-669.png)
+# 141
+### listTodo.jsp
+```jsp
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<html>
+
+<head>
+<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css"
+	rel="stylesheet">
+<title>List todo Page</title>
+</head>
+
+<body>
+	<div class="container">
+		
+		<h1>Your todos are</h1>
+		<hr>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>Description</th>
+					<th>Target Date</th>
+					<th>Is Done?</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${listTodo}" var="todo">
+					<tr>
+						<td>${todo.id}</td>
+						<td>${todo.description}</td>
+						<td>${todo.targetDate}</td>
+						<td>${todo.done}</td>
+						<td><a href="delete-todo?id=${todo.id}" class="btn btn-warning">Delete</a></td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+		<a href="add-todo" class="btn btn-success">Add Todo</a>
+	</div>
+	<script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+	<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+
+</body>
+</html>
+```
+### TodoService
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class TodoService {
+
+	private static List<Todo> todos = new ArrayList<>();
+	
+	private static int todoCount = 0;
+	
+	static {
+		todos.add(new Todo(++todoCount, "in28minutes", "Learn Aws", LocalDate.now().plusYears(1), false));
+		todos.add(new Todo(++todoCount, "in28minutes", "Learn Devops", LocalDate.now().plusYears(2), false));
+		todos.add(new Todo(++todoCount, "in28minutes", "Learn Full Stack", LocalDate.now().plusYears(3), false));
+	}
+	
+	public List<Todo> findByUsername(String username){
+		return todos;
+	}
+	
+	public void addTodo(String username,String description,LocalDate targetDate,boolean done) {
+		
+		Todo todo = new Todo(++todoCount, username, description, targetDate, done);
+		
+		todos.add(todo);
+	}
+	
+	public void deleteById(int id) {
+		todos.removeIf(todo -> todo.getId()== id);
+	}
+}
+```
+### TodoController
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+import jakarta.validation.Valid;
+
+@Controller
+@SessionAttributes("username")
+public class TodoController {
+	
+	private TodoService todoService;
+
+	public TodoController(TodoService todoService) {
+		super();
+		this.todoService = todoService;
+	}
+	
+	@RequestMapping("list-todos")
+	public String getAllListedTodos(ModelMap model) {
+		
+		List<Todo> listTodo = todoService.findByUsername("in28minutes");
+		model.put("listTodo", listTodo);
+		return "listTodos";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.GET)
+	public String showNewTodoPage(ModelMap model) {
+		String username = (String) model.get("username");
+		Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
+		model.put("todo", todo);
+		return "todo";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.POST)
+	public String addNewTodo( ModelMap model,@Valid Todo todo,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return "todo";
+		}
+		String username = (String) model.get("username");
+		todoService.addTodo(username, todo.getDescription(), LocalDate.now().plusYears(1), false);
+		return "redirect:list-todos";
+	}
+	
+	@RequestMapping("delete-todo")
+	public String deleteTodo(@RequestParam  int id) {
+		
+		todoService.deleteById(id);
+		return "redirect:list-todos";
+	}
+
+}
+```
+# 142. Step25- Implementing Update todo part-1
+![alt text](image-670.png)![alt text](image-671.png)![alt text](image-672.png)![alt text](image-673.png)![alt text](image-674.png)![alt text](image-675.png)![alt text](image-676.png)![alt text](image-677.png)
+# 142
+### listTodo.jsp
+```jsp
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<html>
+
+<head>
+<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css"
+	rel="stylesheet">
+<title>List todo Page</title>
+</head>
+
+<body>
+	<div class="container">
+		
+		<h1>Your todos are</h1>
+		<hr>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>Description</th>
+					<th>Target Date</th>
+					<th>Is Done?</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${listTodo}" var="todo">
+					<tr>
+						<td>${todo.id}</td>
+						<td>${todo.description}</td>
+						<td>${todo.targetDate}</td>
+						<td>${todo.done}</td>
+						<td><a href="delete-todo?id=${todo.id}" class="btn btn-warning">Delete</a></td>
+						<td><a href="update-todo?id=${todo.id}" class="btn btn-success">Update</a></td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+		<a href="add-todo" class="btn btn-success">Add Todo</a>
+	</div>
+	<script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+	<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+
+</body>
+</html>
+```
+###  TodoService
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class TodoService {
+
+	private static List<Todo> todos = new ArrayList<>();
+	
+	private static int todoCount = 0;
+	
+	static {
+		todos.add(new Todo(++todoCount, "in28minutes", "Learn Aws", LocalDate.now().plusYears(1), false));
+		todos.add(new Todo(++todoCount, "in28minutes", "Learn Devops", LocalDate.now().plusYears(2), false));
+		todos.add(new Todo(++todoCount, "in28minutes", "Learn Full Stack", LocalDate.now().plusYears(3), false));
+	}
+	
+	public List<Todo> findByUsername(String username){
+		return todos;
+	}
+	
+	public void addTodo(String username,String description,LocalDate targetDate,boolean done) {
+		
+		Todo todo = new Todo(++todoCount, username, description, targetDate, done);
+		
+		todos.add(todo);
+	}
+	
+	public void deleteById(int id) {
+		todos.removeIf(todo -> todo.getId()== id);
+	}
+	
+	public Todo findById(int id) {
+		
+		return todos.stream()
+				.filter(todo -> todo.getId() == id)
+				.findFirst()
+				.get();
+	}
+}
+```
+### TodoController
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+import jakarta.validation.Valid;
+
+@Controller
+@SessionAttributes("username")
+public class TodoController {
+	
+	private TodoService todoService;
+
+	public TodoController(TodoService todoService) {
+		super();
+		this.todoService = todoService;
+	}
+	
+	@RequestMapping("list-todos")
+	public String getAllListedTodos(ModelMap model) {
+		
+		List<Todo> listTodo = todoService.findByUsername("in28minutes");
+		model.put("listTodo", listTodo);
+		return "listTodos";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.GET)
+	public String showNewTodoPage(ModelMap model) {
+		String username = (String) model.get("username");
+		Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
+		model.put("todo", todo);
+		return "todo";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.POST)
+	public String addNewTodo( ModelMap model,@Valid Todo todo,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return "todo";
+		}
+		String username = (String) model.get("username");
+		todoService.addTodo(username, todo.getDescription(), LocalDate.now().plusYears(1), false);
+		return "redirect:list-todos";
+	}
+	
+	@RequestMapping("delete-todo")
+	public String deleteTodo(@RequestParam  int id) {
+		
+		todoService.deleteById(id);
+		return "redirect:list-todos";
+	}
+	
+	
+	@RequestMapping("update-todo")
+	public String showUpdateTodoPage(@RequestParam  int id, ModelMap model) {
+		
+		Todo todo = todoService.findById(id);
+		model.put("todo", todo);
+		
+		return "todo";
+	}
+}
+```
+# 143. Step26. Implementing Update Todo part2
+![alt text](image-678.png)![alt text](image-679.png)![alt text](image-680.png)![alt text](image-681.png)
+# 143
+### TodoController
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+import jakarta.validation.Valid;
+
+@Controller
+@SessionAttributes("username")
+public class TodoController {
+	
+	private TodoService todoService;
+
+	public TodoController(TodoService todoService) {
+		super();
+		this.todoService = todoService;
+	}
+	
+	@RequestMapping("list-todos")
+	public String getAllListedTodos(ModelMap model) {
+		
+		List<Todo> listTodo = todoService.findByUsername("in28minutes");
+		model.put("listTodo", listTodo);
+		return "listTodos";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.GET)
+	public String showNewTodoPage(ModelMap model) {
+		String username = (String) model.get("username");
+		Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
+		model.put("todo", todo);
+		return "todo";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.POST)
+	public String addNewTodo( ModelMap model,@Valid Todo todo,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return "todo";
+		}
+		String username = (String) model.get("username");
+		todoService.addTodo(username, todo.getDescription(), LocalDate.now().plusYears(1), false);
+		return "redirect:list-todos";
+	}
+	
+	@RequestMapping("delete-todo")
+	public String deleteTodo(@RequestParam  int id) {
+		
+		todoService.deleteById(id);
+		return "redirect:list-todos";
+	}
+	
+	
+	@RequestMapping(value = "update-todo",method = RequestMethod.GET)
+	public String showUpdateTodoPage(@RequestParam  int id, ModelMap model) {
+		
+		Todo todo = todoService.findById(id);
+		model.put("todo", todo);
+		
+		return "todo";
+	}
+	
+	
+	@RequestMapping(value = "update-todo",method = RequestMethod.POST)
+	public String updateTodo( ModelMap model,@Valid Todo todo,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return "todo";
+		}
+		String username = (String) model.get("username");
+		todo.setUsername(username);
+		todoService.updateTodo(todo);
+		
+		return "redirect:list-todos";
+	}
+}
+```
+### TodoService
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import jakarta.validation.Valid;
+
+@Service
+public class TodoService {
+
+	private static List<Todo> todos = new ArrayList<>();
+	
+	private static int todoCount = 0;
+	
+	static {
+		todos.add(new Todo(++todoCount, "in28minutes", "Learn Aws", LocalDate.now().plusYears(1), false));
+		todos.add(new Todo(++todoCount, "in28minutes", "Learn Devops", LocalDate.now().plusYears(2), false));
+		todos.add(new Todo(++todoCount, "in28minutes", "Learn Full Stack", LocalDate.now().plusYears(3), false));
+	}
+	
+	public List<Todo> findByUsername(String username){
+		return todos;
+	}
+	
+	public void addTodo(String username,String description,LocalDate targetDate,boolean done) {
+		
+		Todo todo = new Todo(++todoCount, username, description, targetDate, done);
+		
+		todos.add(todo);
+	}
+	
+	public void deleteById(int id) {
+		todos.removeIf(todo -> todo.getId()== id);
+	}
+	
+	public Todo findById(int id) {
+		
+		return todos.stream()
+				.filter(todo -> todo.getId() == id)
+				.findFirst()
+				.get();
+	}
+
+	public void updateTodo(@Valid Todo todo) {
+		
+		deleteById(todo.getId());
+		todos.add(todo);		
+	}
+}
+```
+# 145. Step27. Adding Target Date field to Todo page
+![alt text](image-682.png)![alt text](image-683.png)![alt text](image-684.png)![alt text](image-685.png)![alt text](image-686.png)![alt text](image-687.png)![alt text](image-688.png)![alt text](image-689.png)![alt text](image-690.png)![alt text](image-691.png)![alt text](image-692.png)![alt text](image-693.png)![alt text](image-694.png)![alt text](image-695.png)![alt text](image-696.png)![alt text](image-697.png)![alt text](image-698.png)![alt text](image-699.png)![alt text](image-700.png)![alt text](image-701.png)![alt text](image-702.png)![alt text](image-703.png)
+# 145
+### pom.xml
+```xml
+<!-- https://mvnrepository.com/artifact/org.webjars/bootstrap-datepicker -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap-datepicker</artifactId>
+			<version>1.9.0</version>
+		</dependency>
+```
+### application.properties
+```properties
+spring.application.name=myfirstwebapp
+
+spring.mvc.view.prefix=/WEB-INF/jsp/
+spring.mvc.view.suffix=.jsp
+
+logging.level.org.springframework=info
+logging.level.com.in28minutes.springboot.myfirstwebapp=info
+
+spring.mvc.format.date=yyyy-MM-dd
+```
+### listTodos.jsp
+```jsp
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<html>
+
+<head>
+<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css"
+	rel="stylesheet">
+<title>List todo Page</title>
+</head>
+
+<body>
+	<div class="container">
+		
+		<h1>Your todos are</h1>
+		<hr>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Description</th>
+					<th>Target Date</th>
+					<th>Is Done?</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${listTodo}" var="todo">
+					<tr>
+						<td>${todo.description}</td>
+						<td>${todo.targetDate}</td>
+						<td>${todo.done}</td>
+						<td><a href="delete-todo?id=${todo.id}" class="btn btn-warning">Delete</a></td>
+						<td><a href="update-todo?id=${todo.id}" class="btn btn-success">Update</a></td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+		<a href="add-todo" class="btn btn-success">Add Todo</a>
+	</div>
+	<script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+	<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+
+</body>
+</html>
+```
+### todo.jsp
+```jsp
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<html>
+<head>
+<title>Todo Page</title>
+<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css"
+	rel="stylesheet">
+<link href="webjars/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.standalone.min.css"
+ rel="stylesheet">
+</head>
+
+<body>
+	<div class="container">
+		<h1>Enter Todo Details</h1>
+		<form:form method="post" modelAttribute="todo">
+
+			<fieldset class="mb-3">
+				<form:label path="description">Description</form:label>
+				<form:input type="text" path="description" required="required" />
+				<form:errors type="text" path="description" cssClass="text-warning" />
+			</fieldset>
+
+			<fieldset class="mb-3">
+				<form:label path="targetDate">Target Date</form:label>
+				<form:input type="text" path="targetDate" required="required" />
+				<form:errors type="text" path="targetDate" cssClass="text-warning" />
+			</fieldset>
+
+
+			<form:input type="hidden" path="id" />
+			<form:input type="hidden" path="done" />
+			<input type="submit" class="btn btn-success">
+		</form:form>
+	</div>
+	<script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+	<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+	<script src="webjars/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+	
+	<script type="text/javascript">
+			$('#targetDate').datepicker({
+	    		format: 'yyyy-mm-dd'
+			});
+	</script>
+</body>
+</html>
+```
+### TodoController.java
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+import jakarta.validation.Valid;
+
+@Controller
+@SessionAttributes("username")
+public class TodoController {
+	
+	private TodoService todoService;
+
+	public TodoController(TodoService todoService) {
+		super();
+		this.todoService = todoService;
+	}
+	
+	@RequestMapping("list-todos")
+	public String getAllListedTodos(ModelMap model) {
+		
+		List<Todo> listTodo = todoService.findByUsername("in28minutes");
+		model.put("listTodo", listTodo);
+		return "listTodos";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.GET)
+	public String showNewTodoPage(ModelMap model) {
+		String username = (String) model.get("username");
+		Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
+		model.put("todo", todo);
+		return "todo";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.POST)
+	public String addNewTodo( ModelMap model,@Valid Todo todo,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return "todo";
+		}
+		String username = (String) model.get("username");
+		todoService.addTodo(username, todo.getDescription(), todo.getTargetDate(), false);
+		return "redirect:list-todos";
+	}
+	
+	@RequestMapping("delete-todo")
+	public String deleteTodo(@RequestParam  int id) {
+		
+		todoService.deleteById(id);
+		return "redirect:list-todos";
+	}
+	
+	
+	@RequestMapping(value = "update-todo",method = RequestMethod.GET)
+	public String showUpdateTodoPage(@RequestParam  int id, ModelMap model) {
+		
+		Todo todo = todoService.findById(id);
+		model.put("todo", todo);
+		
+		return "todo";
+	}
+	
+	
+	@RequestMapping(value = "update-todo",method = RequestMethod.POST)
+	public String updateTodo( ModelMap model,@Valid Todo todo,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return "todo";
+		}
+		String username = (String) model.get("username");
+		todo.setUsername(username);
+		todoService.updateTodo(todo);
+		
+		return "redirect:list-todos";
+	}
+}
+```
+# 147. Step28 Adding a navigation bar & implementing Jsp fragment
+![alt text](image-704.png)![alt text](image-705.png)![alt text](image-706.png)![alt text](image-707.png)![alt text](image-708.png)![alt text](image-709.png)![alt text](image-710.png)![alt text](image-711.png)![alt text](image-712.png)![alt text](image-713.png)![alt text](image-714.png)![alt text](image-715.png)![alt text](image-716.png)![alt text](image-717.png)![alt text](image-718.png)![alt text](image-719.png)![alt text](image-720.png)![alt text](image-721.png)![alt text](image-722.png)![alt text](image-723.png)![alt text](image-724.png)![alt text](image-725.png)
+# 147
+### navigation.jspf
+```jsp
+<nav class="navbar navbar-expand-md navbar-light bg-light mb-3 p-1">
+	<a class="navbar-brand m-1" href="https://courses.in28minutes.com">in28minutes</a>
+	<div class="collapse navbar-collapse">
+		<ul class="navbar-nav">
+			<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+			<li class="nav-item"><a class="nav-link" href="/list-todos">Todos</a></li>
+		</ul>
+	</div>
+	<ul class="navbar-nav">
+		<li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+	</ul>
+</nav>
+```
+### header.jsp
+```jspf
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<html>
+<head>
+<title>Todo Page</title>
+<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css"
+	rel="stylesheet">
+<link href="webjars/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.standalone.min.css"
+	rel="stylesheet">
+</head>
+
+<body>
+```
+### footer.jspf
+```jsp
+<script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+<script src="webjars/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+</body>
+</html>
+```
+### listTodos.jsp
+```jsp
+<%@ include file="common/header.jspf" %>
+<%@ include file="common/navigation.jspf" %>
+<div class="container">
+	<h1>Your todos are</h1>
+	<hr>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Description</th>
+				<th>Target Date</th>
+				<th>Is Done?</th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:forEach items="${listTodo}" var="todo">
+			<tr>
+				<td>${todo.description}</td>
+				<td>${todo.targetDate}</td>
+				<td>${todo.done}</td>
+				<td><a href="delete-todo?id=${todo.id}"
+					class="btn btn-warning">Delete</a></td>
+				<td><a href="update-todo?id=${todo.id}"
+					class="btn btn-success">Update</a></td>
+			</tr>
+		</c:forEach>
+		</tbody>
+	</table>
+	<a href="add-todo" class="btn btn-success">Add Todo</a>
+</div>
+<%@ include file="common/footer.jspf" %>
+```
+### todo.jsp
+```jsp
+<%@ include file="common/header.jspf" %>
+<%@ include file="common/navigation.jspf" %>
+<div class="container">
+	<h1>Enter Todo Details</h1>
+	<form:form method="post" modelAttribute="todo">
+	<fieldset class="mb-3">
+		<form:label path="description">Description</form:label>
+		<form:input type="text" path="description" required="required" />
+		<form:errors type="text" path="description" cssClass="text-warning" />
+	</fieldset>
+	<fieldset class="mb-3">
+		<form:label path="targetDate">Target Date</form:label>
+		<form:input type="text" path="targetDate" required="required" />
+		<form:errors type="text" path="targetDate" cssClass="text-warning" />
+	</fieldset>
+	<form:input type="hidden" path="id" />
+	<form:input type="hidden" path="done" />
+	<input type="submit" class="btn btn-success">
+</form:form>
+</div>
+<%@ include file="common/footer.jspf" %>	
+<script type="text/javascript">
+$('#targetDate').datepicker({
+	format : 'yyyy-mm-dd'
+});
+</script>
+```
+### welcome.jspf
+```jsp
+<%@ include file="common/header.jspf" %>
+<%@ include file="common/navigation.jspf" %>
+<div class="container">
+	<h1>Welcome ${username }</h1>
+	<a href="list-todos">Manage</a> Your Todos
+</div>
+<%@ include file="common/footer.jspf" %>
+```
+# 148. Step29 – Clean up code
+![alt text](image-726.png)![alt text](image-727.png)![alt text](image-728.png)![alt text](image-729.png)
+# 148
+### WelcomeController
+```java
+package com.in28minutes.springboot.myfirstwebapp.login;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+@Controller
+@SessionAttributes("name")
+public class WelcomeController {	
+
+	@RequestMapping(value = "/",method = RequestMethod.GET)
+	public String gotoLoginPage(ModelMap model) {		
+		model.put("name", "in28minutes");
+		return "welcome";
+	}
+}
+```
+# 149. Step30 Setting up Spring Security
+![alt text](image-730.png)![alt text](image-731.png)![alt text](image-732.png)![alt text](image-733.png)
+# 149
+### pom.xml
+```xml
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+```
+# 150.  Step31  Configuring Spring Security with Custom User and Password 
+![alt text](image-734.png)![alt text](image-735.png)![alt text](image-736.png)![alt text](image-737.png)![alt text](image-738.png)![alt text](image-739.png)![alt text](image-740.png)![alt text](image-741.png)![alt text](image-742.png)![alt text](image-743.png)![alt text](image-744.png)![alt text](image-745.png)![alt text](image-746.png)
+# 150
+### SpringSecurityConfiguration.java with Default Encoder
+```java
+package com.in28minutes.springboot.myfirstwebapp.security;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+@Configuration
+public class SpringSecurityConfiguration {
+
+	@Bean
+	public InMemoryUserDetailsManager createUserDetailsManager() {
+		
+		UserDetails userDetails = User.withDefaultPasswordEncoder()
+									.username("in28minutes")
+									.password("dummy2")
+									.roles("USER","ADMIN")
+									.build();
+		
+		return new InMemoryUserDetailsManager(userDetails);
+	}
+}
+```
+### SpringSecurityConfiguration.java with Custom Encoder
+```java
+package com.in28minutes.springboot.myfirstwebapp.security;
+
+import java.util.function.Function;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+@Configuration
+public class SpringSecurityConfiguration {
+
+	@Bean
+	public InMemoryUserDetailsManager createUserDetailsManager() {
+		
+		Function<String, String> passwordEncoder= input -> getPasswordEncoder().encode(input);
+		
+		UserDetails userDetails = User.builder()
+									.passwordEncoder(passwordEncoder)
+									.username("in28minutes")
+									.password("dummy2")
+									.roles("USER","ADMIN")
+									.build();
+		
+		return new InMemoryUserDetailsManager(userDetails);
+	}
+	
+	@Bean
+	public PasswordEncoder getPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+}
+```
+# 151. Step32 Refactoring & Removing hardcoding of UserId.
+![alt text](image-747.png)![alt text](image-748.png)![alt text](image-749.png)![alt text](image-750.png)![alt text](image-751.png)![alt text](image-752.png)![alt text](image-753.png)![alt text](image-754.png)![alt text](image-755.png)![alt text](image-756.png)![alt text](image-757.png)![alt text](image-758.png)![alt text](image-759.png)![alt text](image-760.png)![alt text](image-761.png)
+# 151
+###  WelcomeController
+```java
+package com.in28minutes.springboot.myfirstwebapp.login;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+@Controller
+@SessionAttributes("name")
+public class WelcomeController {	
+
+	@RequestMapping(value = "/",method = RequestMethod.GET)
+	public String gotoLoginPage(ModelMap model) {		
+		model.put("name", getLoggedInUserName());
+		return "welcome";
+	}
+
+	private String getLoggedInUserName() {
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		return authentication.getName();
+	}
+}
+```
+###  TodoController
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+import jakarta.validation.Valid;
+
+@Controller
+@SessionAttributes("username")
+public class TodoController {
+	
+	private TodoService todoService;
+
+	public TodoController(TodoService todoService) {
+		super();
+		this.todoService = todoService;
+	}
+	
+	@RequestMapping("list-todos")
+	public String getAllListedTodos(ModelMap model) {		
+		String username = getLoggedInUsername(model);
+		List<Todo> listTodo = todoService.findByUsername(username);
+		model.put("listTodo", listTodo);
+		return "listTodos";
+	}
+
+	
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.GET)
+	public String showNewTodoPage(ModelMap model) {
+		String username = getLoggedInUsername(model);
+		Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
+		model.put("todo", todo);
+		return "todo";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.POST)
+	public String addNewTodo( ModelMap model,@Valid Todo todo,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return "todo";
+		}
+		String username = getLoggedInUsername(model);
+		todoService.addTodo(username, todo.getDescription(), todo.getTargetDate(), false);
+		return "redirect:list-todos";
+	}
+	
+	@RequestMapping("delete-todo")
+	public String deleteTodo(@RequestParam  int id) {
+		
+		todoService.deleteById(id);
+		return "redirect:list-todos";
+	}
+	
+	
+	@RequestMapping(value = "update-todo",method = RequestMethod.GET)
+	public String showUpdateTodoPage(@RequestParam  int id, ModelMap model) {
+		
+		Todo todo = todoService.findById(id);
+		model.put("todo", todo);
+		
+		return "todo";
+	}
+	
+	
+	@RequestMapping(value = "update-todo",method = RequestMethod.POST)
+	public String updateTodo( ModelMap model,@Valid Todo todo,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return "todo";
+		}
+		String username = getLoggedInUsername(model);
+		todo.setUsername(username);
+		todoService.updateTodo(todo);
+		
+		return "redirect:list-todos";
+	}
+	
+	private String getLoggedInUsername(ModelMap model) {
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return authentication.getName();
+	}
+}
+```
+# 152. Step33 Setting up a new user for TodoApp
+![alt text](image-762.png)![alt text](image-763.png)![alt text](image-764.png)![alt text](image-765.png)![alt text](image-766.png)![alt text](image-767.png)![alt text](image-768.png)![alt text](image-769.png)![alt text](image-770.png)![alt text](image-771.png)![alt text](image-772.png)![alt text](image-773.png)![alt text](image-774.png)![alt text](image-775.png)![alt text](image-776.png)![alt text](image-777.png)![alt text](image-778.png)
+
+# 152
+### SpringSecurityConfiguration
+```java
+package com.in28minutes.springboot.myfirstwebapp.security;
+
+import java.util.function.Function;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+@Configuration
+public class SpringSecurityConfiguration {
+
+	@Bean
+	public InMemoryUserDetailsManager createUserDetailsManager() {
+
+		UserDetails userDetails1 = createNewUser("in28minutes", "dummy");
+		UserDetails userDetails2 = createNewUser("ranga", "dummydummy");
+
+		return new InMemoryUserDetailsManager(userDetails1,userDetails2);
+	}
+
+	private UserDetails createNewUser(String username, String password) {
+
+		Function<String, String> passwordEncoder = input -> getPasswordEncoder().encode(input);
+
+		UserDetails userDetails = User.builder().passwordEncoder(passwordEncoder).username(username).password(password)
+				.roles("USER", "ADMIN").build();
+		return userDetails;
+	}
+
+	@Bean
+	public PasswordEncoder getPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+}
+```
+# 153. Step34  integrate with h2 db and use JPA
+![alt text](image-779.png)![alt text](image-780.png)![alt text](image-781.png)![alt text](image-782.png)![alt text](image-783.png)![alt text](image-784.png)![alt text](image-785.png)![alt text](image-786.png)
+# 154. Step35 01. Configuring Spring Security to get h2 console working.
+![alt text](image-787.png)![alt text](image-788.png)![alt text](image-789.png)![alt text](image-790.png)![alt text](image-791.png)![alt text](image-792.png)![alt text](image-793.png)![alt text](image-794.png)![alt text](image-795.png)![alt text](image-796.png)![alt text](image-797.png)![alt text](image-798.png)![alt text](image-799.png)![alt text](image-800.png)![alt text](image-801.png)
+# 153 & 154
+### pom.xml
+```xml
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+```
+### app.properties
+```properties
+spring.application.name=myfirstwebapp
+
+spring.mvc.view.prefix=/WEB-INF/jsp/
+spring.mvc.view.suffix=.jsp
+
+logging.level.org.springframework=info
+logging.level.com.in28minutes.springboot.myfirstwebapp=info
+
+spring.mvc.format.date=yyyy-MM-dd
+
+spring.datasource.url=jdbc:h2:mem:testdb
+```
+### SpringSecurityConfiguration
+```java
+package com.in28minutes.springboot.myfirstwebapp.security;
+
+import java.util.function.Function;
+import static org.springframework.security.config.Customizer.withDefaults;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class SpringSecurityConfiguration {
+
+	@Bean
+	public InMemoryUserDetailsManager createUserDetailsManager() {
+
+		UserDetails userDetails1 = createNewUser("in28minutes", "dummy");
+		UserDetails userDetails2 = createNewUser("ranga", "dummydummy");
+
+		return new InMemoryUserDetailsManager(userDetails1,userDetails2);
+	}
+
+	private UserDetails createNewUser(String username, String password) {
+
+		Function<String, String> passwordEncoder = input -> getPasswordEncoder().encode(input);
+
+		UserDetails userDetails = User.builder().passwordEncoder(passwordEncoder).username(username).password(password)
+				.roles("USER", "ADMIN").build();
+		return userDetails;
+	}
+
+	@Bean
+	public PasswordEncoder getPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+		
+		//1. Authorize all request
+		httpSecurity.authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
+		
+		//2. form login
+		httpSecurity.formLogin(withDefaults());
+		
+		//3. Disable csrf
+		httpSecurity.csrf().disable();
+		
+		//4. disable spring security frame
+		httpSecurity.headers().frameOptions().disable();
+		
+		return httpSecurity.build();
+	}
+	
+}
+```
+# 155. Step36. Making Todo an Entity & Populating data in h2-console
+![alt text](image-802.png)![alt text](image-803.png)![alt text](image-804.png)![alt text](image-805.png)![alt text](image-806.png)![alt text](image-807.png)![alt text](image-808.png)![alt text](image-809.png)![alt text](image-810.png)![alt text](image-811.png)![alt text](image-812.png)
+# 155
+### app.prop
+```properties
+spring.application.name=myfirstwebapp
+
+spring.mvc.view.prefix=/WEB-INF/jsp/
+spring.mvc.view.suffix=.jsp
+
+logging.level.org.springframework=info
+logging.level.com.in28minutes.springboot.myfirstwebapp=info
+
+spring.mvc.format.date=yyyy-MM-dd
+
+spring.datasource.url=jdbc:h2:mem:testdb
+
+spring.jpa.defer-datasource-initialization=true
+```
+###  data.sql
+```sql
+insert into todo (ID,USERNAME,DESCRIPTION,TARGET_DATE,DONE)
+values(10001,'in28minutes','Get Aws Certificate',CURRENT_DATE(),false);
+
+insert into todo (ID,USERNAME,DESCRIPTION,TARGET_DATE,DONE)
+values(10002,'in28minutes','Get Azure Certificate',CURRENT_DATE(),false);
+
+
+insert into todo (ID,USERNAME,DESCRIPTION,TARGET_DATE,DONE)
+values(10003,'in28minutes','Get GCP Certificate',CURRENT_DATE(),false);
+
+
+insert into Todo (ID,USERNAME,DESCRIPTION,TARGET_DATE,DONE)
+values(10004,'in28minutes','Learn DevOps',CURRENT_DATE(),false);
+```
+### Todo.java
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.Size;
+
+@Entity
+public class Todo {
+
+	@Id
+	@GeneratedValue
+	private int id;
+	
+	private String username;
+	
+	@Size(min = 10,message = "Requires at least 10 char")
+	private String description;
+	
+	private LocalDate targetDate;
+	private boolean done;
+	public Todo(int id, String username, String description, LocalDate targetDate, boolean done) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.description = description;
+		this.targetDate = targetDate;
+		this.done = done;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public LocalDate getTargetDate() {
+		return targetDate;
+	}
+	public void setTargetDate(LocalDate targetDate) {
+		this.targetDate = targetDate;
+	}
+	public boolean isDone() {
+		return done;
+	}
+	public void setDone(boolean done) {
+		this.done = done;
+	}
+	@Override
+	public String toString() {
+		return "Todo [id=" + id + ", username=" + username + ", description=" + description + ", targetDate="
+				+ targetDate + ", done=" + done + "]";
+	}
+	
+}
+```
+# 156. Step37. Creating TodoRepository and connect listTodos page from H2 db
+![alt text](image-813.png)![alt text](image-814.png)![alt text](image-815.png)![alt text](image-816.png)![alt text](image-817.png)![alt text](image-818.png)![alt text](image-819.png)![alt text](image-820.png)![alt text](image-821.png)![alt text](image-822.png)
+# 156
+### TodoRepository
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TodoRepository extends JpaRepository<Todo, Integer> {
+	
+	List<Todo> findByUsername(String username);
+
+}
+```
+### TodoJpaController
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+import jakarta.validation.Valid;
+
+@Controller
+@SessionAttributes("username")
+public class TodoJpaController {
+	
+	private TodoService todoService;
+	private TodoRepository todoRepository;
+
+	public TodoJpaController(TodoService todoService,TodoRepository todoRepository) {
+		super();
+		this.todoService = todoService;
+		this.todoRepository=todoRepository;
+	}
+	
+	@RequestMapping("list-todos")
+	public String getAllListedTodos(ModelMap model) {		
+		String username = getLoggedInUsername(model);
+		List<Todo> listTodo = todoRepository.findByUsername(username);
+		model.put("listTodo", listTodo);
+		return "listTodos";
+	}
+
+	
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.GET)
+	public String showNewTodoPage(ModelMap model) {
+		String username = getLoggedInUsername(model);
+		Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
+		model.put("todo", todo);
+		return "todo";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.POST)
+	public String addNewTodo( ModelMap model,@Valid Todo todo,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return "todo";
+		}
+		String username = getLoggedInUsername(model);
+		todoService.addTodo(username, todo.getDescription(), todo.getTargetDate(), false);
+		return "redirect:list-todos";
+	}
+	
+	@RequestMapping("delete-todo")
+	public String deleteTodo(@RequestParam  int id) {
+		
+		todoService.deleteById(id);
+		return "redirect:list-todos";
+	}
+	
+	
+	@RequestMapping(value = "update-todo",method = RequestMethod.GET)
+	public String showUpdateTodoPage(@RequestParam  int id, ModelMap model) {
+		
+		Todo todo = todoService.findById(id);
+		model.put("todo", todo);
+		
+		return "todo";
+	}
+	
+	
+	@RequestMapping(value = "update-todo",method = RequestMethod.POST)
+	public String updateTodo( ModelMap model,@Valid Todo todo,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return "todo";
+		}
+		String username = getLoggedInUsername(model);
+		todo.setUsername(username);
+		todoService.updateTodo(todo);
+		
+		return "redirect:list-todos";
+	}
+	
+	private String getLoggedInUsername(ModelMap model) {
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return authentication.getName();
+	}
+	
+
+}
+```
+# 157. Step38 Connecting all Todo-app feature to h2 db.
+![alt text](image-823.png)![alt text](image-824.png)![alt text](image-825.png)![alt text](image-826.png)![alt text](image-827.png)![alt text](image-828.png)![alt text](image-829.png)![alt text](image-830.png)![alt text](image-831.png)![alt text](image-832.png)![alt text](image-833.png)![alt text](image-834.png)![alt text](image-835.png)![alt text](image-836.png)
+# 157
+### TodoJpaController
+```java
+package com.in28minutes.springboot.myfirstwebapp.todo;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+import jakarta.validation.Valid;
+
+@Controller
+@SessionAttributes("username")
+public class TodoJpaController {
+	
+	private TodoRepository todoRepository;
+
+	public TodoJpaController(TodoRepository todoRepository) {
+		super();
+		this.todoRepository=todoRepository;
+	}
+	
+	@RequestMapping("list-todos")
+	public String getAllListedTodos(ModelMap model) {		
+		String username = getLoggedInUsername(model);
+		List<Todo> listTodo = todoRepository.findByUsername(username);
+		model.put("listTodo", listTodo);
+		return "listTodos";
+	}
+
+	
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.GET)
+	public String showNewTodoPage(ModelMap model) {
+		String username = getLoggedInUsername(model);
+		Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
+		model.put("todo", todo);
+		return "todo";
+	}
+	
+	@RequestMapping(value = "add-todo",method = RequestMethod.POST)
+	public String addNewTodo( ModelMap model,@Valid Todo todo,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return "todo";
+		}
+		String username = getLoggedInUsername(model);
+		todo.setUsername(username);
+		todoRepository.save(todo);
+		return "redirect:list-todos";
+	}
+	
+	@RequestMapping("delete-todo")
+	public String deleteTodo(@RequestParam  int id) {
+
+		todoRepository.deleteById(id);
+		return "redirect:list-todos";
+	}
+	
+	
+	@RequestMapping(value = "update-todo",method = RequestMethod.GET)
+	public String showUpdateTodoPage(@RequestParam  int id, ModelMap model) {
+		
+		Todo todo = todoRepository.findById(id).get();
+		model.put("todo", todo);
+		
+		return "todo";
+	}
+	
+	
+	@RequestMapping(value = "update-todo",method = RequestMethod.POST)
+	public String updateTodo( ModelMap model,@Valid Todo todo,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return "todo";
+		}
+		String username = getLoggedInUsername(model);
+		todo.setUsername(username);
+		
+		//Need to save the updated one entity.
+		todoRepository.save(todo);
+		
+		return "redirect:list-todos";
+	}
+	
+	private String getLoggedInUsername(ModelMap model) {
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return authentication.getName();
+	}
+	
+}
+```
+# 158. Step38 Exploring Magic of Spring Boot Starter Jpa and Jpa Repository
+![alt text](image-837.png)![alt text](image-838.png)![alt text](image-839.png)![alt text](image-840.png)![alt text](image-841.png)![alt text](image-842.png)![alt text](image-843.png)
+# 164- How to be productive
+![alt text](image-844.png)![alt text](image-845.png)
+### abc
